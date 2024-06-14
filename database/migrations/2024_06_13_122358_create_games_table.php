@@ -13,7 +13,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('name');
             $table->integer('year');
-            $table->string('description');
+            $table->string('description', 1000);
 
         });
     }
