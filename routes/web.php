@@ -1,6 +1,11 @@
 <?php
 
+use App\Http\Controllers\GamesController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Route::get('/', [GamesController::class, 'index'])->name('index');
+
 Route::get('/', function () {
-    return view('welcome');
+    return Inertia::render('Home');
 });

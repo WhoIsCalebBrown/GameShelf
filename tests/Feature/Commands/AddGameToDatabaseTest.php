@@ -12,6 +12,8 @@ class AddGameToDatabaseTest extends TestCase
 {
     use RefreshDatabase;
 
+
+
     public function test_it_adds_a_game_to_the_database()
     {
         $gameName = 'Lufia & the Fortress of Doom';
@@ -38,7 +40,7 @@ class AddGameToDatabaseTest extends TestCase
         $gameName = 'IAmNotARealGame';
 
         Http::fake([
-            '*' => Http::response(['results' => []], 200),
+            '*' => Http::response(['results' => []]),
         ]);
 
         $this->artisan('app:add-game-to-database', ['gameName' => $gameName])
