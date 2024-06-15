@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\GamesController;
+use App\Http\Controllers\GameController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -22,4 +22,12 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Home');
+});
+
+
+Route::prefix('games')->name('games.')->group(function (){
+    Route::get('/games', [GameController::class, 'index'])->name('index');
+    Route::post('/games', [GameController::class, 'store'])->name('store');
+    Route::put('/games/{game}', [GameController::class, 'update'])->name('update');
+    Route::delete('/games/{game}', [GameController::class, 'destroy'])->name('delete');
 });

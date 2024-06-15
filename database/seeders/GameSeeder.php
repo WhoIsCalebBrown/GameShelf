@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Game;
+use App\Models\Games;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,6 +13,6 @@ class GameSeeder extends Seeder
      */
     public function run(): void
     {
-        Game::factory(3)->create();
+        Games::factory(3)->create();
     }
 }
