@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -20,9 +21,7 @@ use Inertia\Inertia;
 
 //Route::get('/', [GamesController::class, 'index'])->name('index');
 
-Route::get('/', function () {
-    return Inertia::render('Home');
-});
+Route::get('/', HomeController::class);
 
 
 Route::prefix('games')->name('games.')->group(function (){

@@ -1,29 +1,29 @@
 import React from 'react';
 import { Head } from '@inertiajs/inertia-react';
 
-const games = [
-    {
-        id: 1,
-        title: 'The Legend of Zelda: Breath of the Wild',
-        description: 'An open-world adventure game set in the kingdom of Hyrule.',
-        image: 'https://example.com/zelda.jpg',
-    },
-    {
-        id: 2,
-        title: 'Super Mario Odyssey',
-        description: 'A platform game where Mario travels across various worlds.',
-        image: 'https://example.com/mario.jpg',
-    },
-    {
-        id: 3,
-        title: 'Chrono Trigger',
-        description: 'Artwork by Akira Toriyama adventure through time to save the world.',
-        image: 'https://example.com/chrono.jpg',
-    }
-    // Add more games as needed
-];
+// const games = [
+//     {
+//         id: 1,
+//         title: 'The snickers of Zelda: Breath of the Wild',
+//         description: 'An open-world adventure game set in the kingdom of Hyrule.',
+//         image: 'https://example.com/zelda.jpg',
+//     },
+//     {
+//         id: 2,
+//         title: 'Super Mario Odyssey',
+//         description: 'A platform game where Mario travels across various worlds.',
+//         image: 'https://example.com/mario.jpg',
+//     },
+//     {
+//         id: 3,
+//         title: 'Chrono Trigger',
+//         description: 'Artwork by Akira Toriyama adventure through time to save the world.',
+//         image: 'https://example.com/chrono.jpg',
+//     }
+//     // Add more games as needed
+// ];
 
-const Home = () => {
+const Home = ({games}) => {
     return (
         <div className="container mx-auto p-4">
             <Head title="Video Game Aggregator" />
@@ -32,12 +32,13 @@ const Home = () => {
                 {games.map((game) => (
                     <div key={game.id} className="bg-white rounded-lg shadow-md p-4">
                         <img
-                            src={game.image}
-                            alt={game.title}
+                            src="https://placehold.co/600x400"
+                            alt={game.name}
                             className="w-full h-48 object-cover rounded-md mb-4"
                         />
-                        <h2 className="text-xl font-semibold mb-2">{game.title}</h2>
+                        <h2 className="text-xl font-semibold mb-2">{game.name}</h2>
                         <p className="text-gray-700">{game.description}</p>
+                        <p className=" text-right text-gray-700 font-bold">{game.platform}</p>
                     </div>
                 ))}
             </div>

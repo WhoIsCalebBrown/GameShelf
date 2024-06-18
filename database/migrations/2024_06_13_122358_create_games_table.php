@@ -16,7 +16,6 @@ return new class extends Migration
             $table->text('description');
             $table->string('genre');
             $table->string('platform');
-
         });
     }
 

@@ -12,7 +12,7 @@ class Games extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'user_games')->withPivot('status')->withTimestamps();
+        return $this->belongsToMany(User::class);
     }
 
 
