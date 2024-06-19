@@ -16,7 +16,7 @@ class User extends Authenticatable
 
     public function games(): BelongsToMany
     {
-        return $this->belongsToMany(Games::class);
+        return $this->belongsToMany(Game::class);
     }
 
     /**

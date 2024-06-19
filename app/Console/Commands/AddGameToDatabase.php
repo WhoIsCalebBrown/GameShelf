@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Games;
+use App\Models\Game;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
@@ -42,7 +42,7 @@ class AddGameToDatabase extends Command
             $data = json_decode($contents, true);
 
             if (isset($data["results"]["0"])) {
-                $game = new Games();
+                $game = new Game();
                 $game->name = $data["results"]["0"]["name"];
                 $game->year = $data["results"]["0"]["year"];
                 $game->description = $data["results"]["0"]["description"];
