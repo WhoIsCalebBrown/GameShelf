@@ -1,44 +1,22 @@
 import React from 'react';
 import { Head } from '@inertiajs/inertia-react';
 
-// const games = [
-//     {
-//         id: 1,
-//         title: 'The snickers of Zelda: Breath of the Wild',
-//         description: 'An open-world adventure game set in the kingdom of Hyrule.',
-//         image: 'https://example.com/zelda.jpg',
-//     },
-//     {
-//         id: 2,
-//         title: 'Super Mario Odyssey',
-//         description: 'A platform game where Mario travels across various worlds.',
-//         image: 'https://example.com/mario.jpg',
-//     },
-//     {
-//         id: 3,
-//         title: 'Chrono Trigger',
-//         description: 'Artwork by Akira Toriyama adventure through time to save the world.',
-//         image: 'https://example.com/chrono.jpg',
-//     }
-//     // Add more games as needed
-// ];
-
-const Home = ({games}) => {
+const Home = ({ games }) => {
     return (
-        <div className="container mx-auto p-4">
-            <Head title="Video Game Aggregator" />
-            <h1 className="text-3xl font-bold mb-4 text-center">Video Game Aggregator</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="bg-gray-900 text-white min-h-screen p-8">
+            <Head title="GameShelf - Your Video Game Collection Manager" />
+            <h1 className="text-5xl font-extrabold mb-8 text-center text-purple-600">GameShelf</h1>
+            <div className="flex flex-wrap justify-center gap-8">
                 {games.map((game) => (
-                    <div key={game.id} className="bg-white rounded-lg shadow-md p-4">
+                    <div key={game.id} className="bg-gray-800 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300 p-6 w-72 relative">
                         <img
                             src="https://placehold.co/600x400"
                             alt={game.name}
                             className="w-full h-48 object-cover rounded-md mb-4"
                         />
-                        <h2 className="text-xl font-semibold mb-2">{game.name}</h2>
-                        <p className="text-gray-700">{game.description}</p>
-                        <p className=" text-right text-gray-700 font-bold">{game.platform}</p>
+                        <h2 className="text-2xl font-semibold text-purple-600 mb-2">{game.name}</h2>
+                        <p className="text-gray-400 mb-12">{game.description}</p>
+                        <p className="absolute bottom-4 right-4 text-gray-500 font-bold">{game.platform}</p>
                     </div>
                 ))}
             </div>

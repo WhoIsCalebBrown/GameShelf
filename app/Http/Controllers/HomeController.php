@@ -11,9 +11,7 @@ class HomeController extends Controller
 {
     public function __invoke(Request $request)
     {
-
         $miyagi = User::first()->games;
-
 
         return Inertia::render('Home', [
             'games' => $miyagi,
