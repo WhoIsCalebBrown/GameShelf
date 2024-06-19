@@ -1,9 +1,8 @@
 <?php
 
-namespace Database\Seeders;
+namespace App\Providers\database\seeders;
 
 use App\Models\Game;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class GameSeeder extends Seeder
