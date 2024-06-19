@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
-use App\Models\UserGame;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use MarcReichel\IGDBLaravel\Models\Game as IGDBGame;
