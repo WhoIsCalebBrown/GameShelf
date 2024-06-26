@@ -6,9 +6,7 @@ import NavBar from "@/Components/NavBar.jsx";
 export default function Welcome({ auth }) {
     return (
         <>
-            <Head title="Welcome">
-                <meta name="csrf-token" content="{{ csrf_token() }}"/>
-            </Head>
+            <Head title="Welcome"/>
             <div>
                 {auth.user ? (
                     <NavBar user={auth.user}/>
@@ -32,36 +30,6 @@ export default function Welcome({ auth }) {
             </div>
             <div
                 className="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
-            {/*    /!*Parent styles causing nav to not show when un-auth*!/*/}
-            {/*    <div className="z-50 sm:fixed sm:top-0 sm:right-0 p-6 text-end">*/}
-            {/*        {auth.user ? (*/}
-            {/*            <Link*/}
-            {/*                href={route('dashboard')}*/}
-            {/*                className="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"*/}
-            {/*            >*/}
-            {/*                Dashboard*/}
-            {/*            </Link>*/}
-
-            {/*        ) : (*/}
-            {/*            <>*/}
-            {/*                <Link*/}
-            {/*                    href={route('login')}*/}
-            {/*                    className="font-semibold text-gray-600 hover:text-gray-900 dark:text-white dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"*/}
-            {/*                >*/}
-            {/*                    Log in*/}
-            {/*                </Link>*/}
-
-            {/*                <Link*/}
-            {/*                    href={route('register')}*/}
-            {/*                    className="ms-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"*/}
-            {/*                >*/}
-            {/*                    Register*/}
-            {/*                </Link>*/}
-            {/*            </>*/}
-            {/*        )}*/}
-            {/*    </div>*/}
-
-
                 {!auth.user && (
                     <div className="relative isolate overflow-hidden bg-gray-900 w-full">
                         <svg
@@ -105,8 +73,8 @@ export default function Welcome({ auth }) {
                             <div className="mx-auto max-w-2xl flex-shrink-0 lg:mx-0 lg:max-w-xl lg:pt-8">
                                 <div className="mt-24 sm:mt-32 lg:mt-16">
                                     <svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg"
-                                         xmlns:xlink="http://www.w3.org/1999/xlink"
-                                         viewBox="0 0 512 512" xml:space="preserve" height={50} width={50}
+                                         xmlnsXlink="http://www.w3.org/1999/xlink"
+                                         viewBox="0 0 512 512" xmlSpace="preserve" height={50} width={50}
                                          className={'fill-current text-purple-500 mb-3'}>
                                         <g>
                                             <rect x="36.823" y="215.559" className="st0" fill="currentColor"

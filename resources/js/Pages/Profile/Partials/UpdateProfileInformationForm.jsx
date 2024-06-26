@@ -53,7 +53,6 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
             },
             onSuccess: () => {
                 setStatusMessage('Profile updated successfully.');
-                console.log('Profile updated successfully');
             },
             onError: (errors) => {
                 console.error('Failed to update profile:', errors);
