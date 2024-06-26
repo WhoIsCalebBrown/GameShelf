@@ -38,32 +38,7 @@ class ProfileController extends Controller
         if ($request->hasFile('profile_photo')) {
             $newPhoto = $request->file('profile_photo');
             $newPhotoHash = hash_file('sha256', $newPhoto->getRealPath());
-
-            if ($user->profile_photo) {
-                // Get the path to the current photo
-                $currentPhotoPath = storage_path('app/public/' . $user->profile_photo);
-
-                // Check if the current photo exists and calculate its hash
-                if (file_exists($currentPhotoPath)) {
-                    $currentPhotoHash = hash_file('sha256', $currentPhotoPath);
-
-                    // If the hashes match, use the old photo
-                    if ($newPhotoHash === $currentPhotoHash) {
-                        $newPhotoPath = $user->profile_photo;
-                    } else {
-                        // Delete the old photo and upload the new one
-                        Storage::disk('public')->delete($user->profile_photo);
-                        $newPhotoPath = $newPhoto->store('profile_photos', 'public');
-                    }
-                } else {
-                    // If the current photo does not exist (for some reason), upload the new one
-                    $newPhotoPath = $newPhoto->store('profile_photos', 'public');
-                }
-            } else {
-                // If there is no current photo, upload the new one
-                $newPhotoPath = $newPhoto->store('profile_photos', 'public');
-            }
-
+            $newPhotoPath = $this->handleProfilePhoto($user, $newPhoto, $newPhotoHash);
             $user->profile_photo = $newPhotoPath;
         }
 
@@ -106,4 +81,27 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    private function handleProfilePhoto($user, $newPhoto, $newPhotoHash)
+    {
+        if ($user->profile_photo) {
+            $currentPhotoPath = storage_path('app/public/' . $user->profile_photo);
+
+            if (file_exists($currentPhotoPath)) {
+                $currentPhotoHash = hash_file('sha256', $currentPhotoPath);
+
+                if ($newPhotoHash === $currentPhotoHash) {
+                    return $user->profile_photo;
+                } else {
+                    Storage::disk('public')->delete($user->profile_photo);
+                    return $newPhoto->store('profile_photos', 'public');
+                }
+            } else {
+                return $newPhoto->store('profile_photos', 'public');
+            }
+        } else {
+            return $newPhoto->store('profile_photos', 'public');
+        }
+    }
+
 }
