@@ -1,41 +1,66 @@
 import {Head, Link} from '@inertiajs/react';
 import {ChevronRightIcon} from '@heroicons/react/20/solid';
+import NavBar from "@/Components/NavBar.jsx";
 
 
 export default function Welcome({ auth }) {
     return (
         <>
-            <Head title="Welcome"/>
-            <div
-                className="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
-                {/*Parent styles causing nav to not show when un-auth*/}
-                <div className="z-50 sm:fixed sm:top-0 sm:right-0 p-6 text-end">
-                    {auth.user ? (
+            <Head title="Welcome">
+                <meta name="csrf-token" content="{{ csrf_token() }}"/>
+            </Head>
+            <div>
+                {auth.user ? (
+                    <NavBar user={auth.user}/>
+                ) : (
+                    <>
                         <Link
-                            href={route('dashboard')}
-                            className="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                            href={route('login')}
+                            className="font-semibold text-gray-600 hover:text-gray-900 dark:text-white dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
                         >
-                            Dashboard
+                            Log in
                         </Link>
 
-                    ) : (
-                        <>
-                            <Link
-                                href={route('login')}
-                                className="font-semibold text-gray-600 hover:text-gray-900 dark:text-white dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                            >
-                                Log in
-                            </Link>
+                        <Link
+                            href={route('register')}
+                            className="ms-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                        >
+                            Register
+                        </Link>
+                    </>
+                )}
+            </div>
+            <div
+                className="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
+            {/*    /!*Parent styles causing nav to not show when un-auth*!/*/}
+            {/*    <div className="z-50 sm:fixed sm:top-0 sm:right-0 p-6 text-end">*/}
+            {/*        {auth.user ? (*/}
+            {/*            <Link*/}
+            {/*                href={route('dashboard')}*/}
+            {/*                className="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"*/}
+            {/*            >*/}
+            {/*                Dashboard*/}
+            {/*            </Link>*/}
 
-                            <Link
-                                href={route('register')}
-                                className="ms-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                            >
-                                Register
-                            </Link>
-                        </>
-                    )}
-                </div>
+            {/*        ) : (*/}
+            {/*            <>*/}
+            {/*                <Link*/}
+            {/*                    href={route('login')}*/}
+            {/*                    className="font-semibold text-gray-600 hover:text-gray-900 dark:text-white dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"*/}
+            {/*                >*/}
+            {/*                    Log in*/}
+            {/*                </Link>*/}
+
+            {/*                <Link*/}
+            {/*                    href={route('register')}*/}
+            {/*                    className="ms-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"*/}
+            {/*                >*/}
+            {/*                    Register*/}
+            {/*                </Link>*/}
+            {/*            </>*/}
+            {/*        )}*/}
+            {/*    </div>*/}
+
 
                 {!auth.user && (
                     <div className="relative isolate overflow-hidden bg-gray-900 w-full">
@@ -84,13 +109,17 @@ export default function Welcome({ auth }) {
                                          viewBox="0 0 512 512" xml:space="preserve" height={50} width={50}
                                          className={'fill-current text-purple-500 mb-3'}>
                                         <g>
-                                            <rect x="36.823" y="215.559" className="st0" fill="currentColor" width="73.646"
+                                            <rect x="36.823" y="215.559" className="st0" fill="currentColor"
+                                                  width="73.646"
                                                   height="18.412"/>
-                                            <rect x="36.823" y="141.912" className="st0" fill="currentColor" width="73.646"
+                                            <rect x="36.823" y="141.912" className="st0" fill="currentColor"
+                                                  width="73.646"
                                                   height="36.823"/>
-                                            <rect x="165.704" y="215.559" className="st0" fill="currentColor" width="73.646"
+                                            <rect x="165.704" y="215.559" className="st0" fill="currentColor"
+                                                  width="73.646"
                                                   height="18.412"/>
-                                            <rect x="165.704" y="141.912" className="st0" fill="currentColor" width="73.646"
+                                            <rect x="165.704" y="141.912" className="st0" fill="currentColor"
+                                                  width="73.646"
                                                   height="36.823"/>
                                             <path className="st0" fill="currentColor" d="M510.067,401.059L403.032,66.108c-5.512-17.206-21.41-28.193-38.577-28.193c-4.081,0-8.244,0.63-12.325,1.933
                                                 l-0.023,0.008l-63.114,20.156c-5.853,1.879-10.91,5.026-15.135,8.945c-5.434-15.976-20.389-27.536-38.203-27.546h-66.256
