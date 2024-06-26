@@ -1,23 +1,67 @@
+import { useState, useEffect } from 'react';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { Link, router, useForm, usePage } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
 
 export default function UpdateProfileInformation({ mustVerifyEmail, status, className = '' }) {
     const user = usePage().props.auth.user;
+    const initialStatus = usePage().props.status;
+
+    const [statusMessage, setStatusMessage] = useState(initialStatus);
+    const [imagePreview, setImagePreview] = useState(user.profile_photo ? `/storage/${user.profile_photo}` : null);
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
         name: user.name,
         email: user.email,
+        profile_photo: null,
     });
+
+    useEffect(() => {
+        if (data.name !== user.name || data.email !== user.email || data.profile_photo) {
+            setStatusMessage("You need to save your changes.");
+        } else {
+            setStatusMessage(initialStatus);
+        }
+    }, [data, user, initialStatus]);
+
+    const handleChange = (e) => {
+        const key = e.target.name;
+        const value = key === 'profile_photo' ? e.target.files[0] : e.target.value;
+        setData(key, value);
+
+        if (key === 'profile_photo' && e.target.files[0]) {
+            setImagePreview(URL.createObjectURL(e.target.files[0]));
+        }
+    };
 
     const submit = (e) => {
         e.preventDefault();
 
-        patch(route('profile.update'));
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('email', data.email);
+        if (data.profile_photo) {
+            formData.append('profile_photo', data.profile_photo);
+        }
+
+        router.post(route('profile.update'), formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            onSuccess: () => {
+                setStatusMessage('Profile updated successfully.');
+                console.log('Profile updated successfully');
+            },
+            onError: (errors) => {
+                console.error('Failed to update profile:', errors);
+            },
+        });
     };
+
+    const statusColor = statusMessage === "You need to save your changes." ? 'text-yellow-500' : 'text-green-600';
 
     return (
         <section className={className}>
@@ -29,15 +73,22 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                 </p>
             </header>
 
-            <form onSubmit={submit} className="mt-6 space-y-6">
+            {statusMessage && (
+                <div className={`mb-4 text-sm font-medium ${statusColor}`}>
+                    {statusMessage}
+                </div>
+            )}
+
+            <form onSubmit={submit} className="mt-6 space-y-6" encType="multipart/form-data">
                 <div>
                     <InputLabel htmlFor="name" value="Name" />
 
                     <TextInput
                         id="name"
+                        name="name"
                         className="mt-1 block w-full"
                         value={data.name}
-                        onChange={(e) => setData('name', e.target.value)}
+                        onChange={handleChange}
                         required
                         isFocused
                         autoComplete="name"
@@ -51,15 +102,40 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
 
                     <TextInput
                         id="email"
+                        name="email"
                         type="email"
                         className="mt-1 block w-full"
                         value={data.email}
-                        onChange={(e) => setData('email', e.target.value)}
+                        onChange={handleChange}
                         required
                         autoComplete="username"
                     />
 
                     <InputError className="mt-2" message={errors.email} />
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel htmlFor="profile_photo" value="Profile Photo" />
+
+                    {imagePreview && (
+                        <div className="mt-2">
+                            <img
+                                src={imagePreview}
+                                alt="Profile Photo"
+                                className="h-16 w-16 rounded-full object-cover"
+                            />
+                        </div>
+                    )}
+
+                    <input
+                        id="profile_photo"
+                        type="file"
+                        name="profile_photo"
+                        className="mt-1 block w-full"
+                        onChange={handleChange}
+                    />
+
+                    <InputError className="mt-2" message={errors.profile_photo} />
                 </div>
 
                 {mustVerifyEmail && user.email_verified_at === null && (
@@ -101,3 +177,4 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
         </section>
     );
 }
+// Compare this snippet from resources/js/Components/PrimaryButton.jsx:

@@ -7,7 +7,9 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -29,15 +31,59 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        dump($request->all());
+
+        if ($request->hasFile('profile_photo')) {
+            $newPhoto = $request->file('profile_photo');
+            $newPhotoHash = hash_file('sha256', $newPhoto->getRealPath());
+
+            if ($user->profile_photo) {
+                // Get the path to the current photo
+                $currentPhotoPath = storage_path('app/public/' . $user->profile_photo);
+
+                // Check if the current photo exists and calculate its hash
+                if (file_exists($currentPhotoPath)) {
+                    $currentPhotoHash = hash_file('sha256', $currentPhotoPath);
+
+                    // If the hashes match, use the old photo
+                    if ($newPhotoHash === $currentPhotoHash) {
+                        $newPhotoPath = $user->profile_photo;
+                    } else {
+                        // Delete the old photo and upload the new one
+                        Storage::disk('public')->delete($user->profile_photo);
+                        $newPhotoPath = $newPhoto->store('profile_photos', 'public');
+                    }
+                } else {
+                    // If the current photo does not exist (for some reason), upload the new one
+                    $newPhotoPath = $newPhoto->store('profile_photos', 'public');
+                }
+            } else {
+                // If there is no current photo, upload the new one
+                $newPhotoPath = $newPhoto->store('profile_photos', 'public');
+            }
+
+            $user->profile_photo = $newPhotoPath;
         }
 
-        $request->user()->save();
+        // Handle name and email update
+        if ($request->filled('name')) {
+            if($user->name !== $request->input('name')) {
+                $user->name = $request->input('name');
+            }
+        }
 
-        return Redirect::route('profile.edit');
+        if ($request->filled('email')) {
+            if ($user->email !== $request->input('email')) {
+                $user->email = $request->input('email');
+                $user->email_verified_at = null; // Mark email as unverified if it has changed
+            }
+        }
+
+        $user->save();
+
+        return Redirect::route('profile.edit')->with('status', 'Profile updated successfully.');
     }
 
     /**

@@ -12,6 +12,7 @@ export default function Register() {
         email: '',
         password: '',
         password_confirmation: '',
+        profile_photo: null,
     });
 
     useEffect(() => {
@@ -20,17 +21,34 @@ export default function Register() {
         };
     }, []);
 
+    const handleChange = (e) => {
+        if (e.target.name === 'profile_photo') {
+            setData(e.target.name, e.target.files[0]);
+        } else {
+            setData(e.target.name, e.target.value);
+        }
+    };
+
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('register'));
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('email', data.email);
+        formData.append('password', data.password);
+        formData.append('password_confirmation', data.password_confirmation);
+        if (data.profile_photo) {
+            formData.append('profile_photo', data.profile_photo);
+        }
+
+        post(route('register'), formData);
     };
 
     return (
         <GuestLayout>
             <Head title="Register" />
 
-            <form onSubmit={submit}>
+            <form onSubmit={submit} encType="multipart/form-data">
                 <div>
                     <InputLabel htmlFor="name" value="Name" />
 
@@ -41,7 +59,7 @@ export default function Register() {
                         className="mt-1 block w-full"
                         autoComplete="name"
                         isFocused={true}
-                        onChange={(e) => setData('name', e.target.value)}
+                        onChange={handleChange}
                         required
                     />
 
@@ -58,7 +76,7 @@ export default function Register() {
                         value={data.email}
                         className="mt-1 block w-full"
                         autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
+                        onChange={handleChange}
                         required
                     />
 
@@ -75,7 +93,7 @@ export default function Register() {
                         value={data.password}
                         className="mt-1 block w-full"
                         autoComplete="new-password"
-                        onChange={(e) => setData('password', e.target.value)}
+                        onChange={handleChange}
                         required
                     />
 
@@ -92,11 +110,25 @@ export default function Register() {
                         value={data.password_confirmation}
                         className="mt-1 block w-full"
                         autoComplete="new-password"
-                        onChange={(e) => setData('password_confirmation', e.target.value)}
+                        onChange={handleChange}
                         required
                     />
 
                     <InputError message={errors.password_confirmation} className="mt-2" />
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel htmlFor="profile_photo" value="Profile Photo" />
+
+                    <input
+                        id="profile_photo"
+                        type="file"
+                        name="profile_photo"
+                        className="mt-1 block w-full"
+                        onChange={handleChange}
+                    />
+
+                    <InputError message={errors.profile_photo} className="mt-2" />
                 </div>
 
                 <div className="flex items-center justify-end mt-4">
