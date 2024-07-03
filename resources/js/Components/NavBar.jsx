@@ -26,6 +26,8 @@ export default function NavBar({ user }) {
         document.getElementById('logout-form').submit();
     };
 
+    console.log(user.profile_photo);
+
     return (
         <Disclosure as="nav" className="bg-gray-800 fixed top-0 w-full z-50">
             {({ open }) => (
@@ -129,7 +131,7 @@ export default function NavBar({ user }) {
                                             <span className="sr-only">Open user menu</span>
                                             {user.profile_photo && (
                                                 <img className="h-8 w-8 rounded-full"
-                                                     src={`/storage/${user.profile_photo}`} alt=""/>
+                                                     src={user.profile_photo} alt=""/>
                                             )}
                                         </Menu.Button>
                                     </div>
@@ -212,7 +214,7 @@ export default function NavBar({ user }) {
                             <div className="flex items-center px-4">
                                 <div className="flex-shrink-0">
                                     {user.profile_photo && (
-                                        <img className="h-10 w-10 rounded-full" src={`/storage/${user.profile_photo}`} alt="" />
+                                        <img className="h-10 w-10 rounded-full" src={user.profile_photo} alt="" />
                                     )}
                                 </div>
                                 <div className="ml-3">
