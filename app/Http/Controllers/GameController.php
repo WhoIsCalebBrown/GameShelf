@@ -15,6 +15,12 @@ class GameController extends Controller
         return response()->json($games);
     }
 
+    public function searchWithScout(Request $request)
+    {
+        $gameName = $request->input('game_name');
+        $games = Game::search($gameName)->get();
+        return response()->json($games);
+    }
     public function store(Request $request)
     {
         $game = IGDBGame::search("$request->game_name")->get();
@@ -33,4 +39,5 @@ class GameController extends Controller
         Auth::user()->games()->detach($game->id);
         return response()->json(['message' => 'Game removed from list']);
     }
+
 }

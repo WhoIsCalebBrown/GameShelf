@@ -8,13 +8,9 @@ import {
     DialogBackdrop,
 } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
-import { useState, useEffect } from 'react';
-
-const commands = [
-    { id: 1, name: 'Open Settings', action: () => alert('Settings opened!') },
-    { id: 2, name: 'Go to Home', action: () => alert('Navigated to Home!') },
-    // Add more commands...
-];
+import { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
+import debounce from 'lodash.debounce';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
@@ -23,6 +19,7 @@ function classNames(...classes) {
 export default function CommandPalette() {
     const [query, setQuery] = useState('');
     const [open, setOpen] = useState(false);
+    const [commands, setCommands] = useState([]);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -36,12 +33,24 @@ export default function CommandPalette() {
         };
     }, []);
 
-    const filteredCommands =
-        query === ''
-            ? []
-            : commands.filter((command) =>
-                command.name.toLowerCase().includes(query.toLowerCase())
-            );
+    const fetchSearchResults = useCallback(debounce((game_name) => {
+        axios.get(`/games/search?game_name=${game_name}`).then((response) => {
+            const games = response.data.map((game) => ({
+                id: game.id,
+                name: game.name,
+                action: () => alert(`Game selected: ${game.name}`)
+            }));
+            setCommands(games);
+        });
+    }, 300), []);
+
+    useEffect(() => {
+        if (query !== '') {
+            fetchSearchResults(query);
+        } else {
+            setCommands([]);
+        }
+    }, [query, fetchSearchResults]);
 
     return (
         <div>
@@ -81,9 +90,9 @@ export default function CommandPalette() {
                                     onChange={(event) => setQuery(event.target.value)}
                                 />
                             </div>
-                            {filteredCommands.length > 0 && (
+                            {commands.length > 0 && (
                                 <ComboboxOptions className="max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-gray-800">
-                                    {filteredCommands.map((command) => (
+                                    {commands.map((command) => (
                                         <ComboboxOption
                                             key={command.id}
                                             value={command}
@@ -99,7 +108,7 @@ export default function CommandPalette() {
                                     ))}
                                 </ComboboxOptions>
                             )}
-                            {query !== '' && filteredCommands.length === 0 && (
+                            {query !== '' && commands.length === 0 && (
                                 <p className="p-4 text-sm text-gray-500">No commands found.</p>
                             )}
                         </Combobox>
