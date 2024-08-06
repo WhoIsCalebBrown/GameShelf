@@ -1,9 +1,52 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Head } from '@inertiajs/react';
 import NavBar from "@/Components/NavBar.jsx";
 import CommandPalette from "@/Components/CommandPalette.jsx";
+import {Description, Dialog, DialogPanel, DialogTitle} from "@headlessui/react";
+import {Inertia} from "@inertiajs/inertia";
+import TruncatedText from "@/Components/TruncatedText.jsx";
 
 const Home = ({ games, auth }) => {
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [gameData, setGameData] = useState(null);
+
+    const handleOpenModal = (data) => {
+        setGameData(data);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setGameData(null);
+    };
+
+    const handleModalClick = (gameData) => {
+        setIsModalOpen((prev) => !prev);
+        setGameData(gameData);
+    }
+
+    const handleAddGame = () => {
+        if (gameData) {
+            console.log(gameData.id + ' ' + gameData.name + ' ' + gameData.description);
+            axios.post('/game-user', {
+                game_id: gameData.id,
+                game_name: gameData.name,
+                game_description: gameData.description,
+            }).then(response => {
+                console.log(response.data.message);
+                setIsModalOpen(false);
+                setGameData(null);
+                Inertia.reload();
+                // Optionally, refresh the page or update state to reflect changes
+            }).catch(error => {
+                console.error('There was an error adding the game to your collection!', error);
+            });
+
+
+        }
+    }
+
     return (
         <>
             <Head title="Your Video Game Collection Manager"/>
@@ -12,9 +55,25 @@ const Home = ({ games, auth }) => {
                 <NavBar user={auth}/>
             </div>
 
-            <CommandPalette/>
+            <CommandPalette gameModalCallback={handleModalClick}/>
 
-            <div className="relative dark:bg-dots-lighter dark:bg-gray-900 text-white min-h-screen pt-16 p-8 overflow-x-hidden">
+            {gameData && (
+                <Dialog open={isModalOpen} onClose={handleCloseModal}>
+                    <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
+                        <DialogPanel className="max-w-lg space-y-4 border bg-white p-12">
+                            <DialogTitle className="font-bold">{gameData.name}</DialogTitle>
+                            <Description>Do you want to add this game to your library?</Description>
+                            <div className="flex gap-4">
+                                <button onClick={handleCloseModal}>Cancel</button>
+                                <button onClick={handleAddGame}>Add</button>
+                            </div>
+                        </DialogPanel>
+                    </div>
+                </Dialog>
+            )}
+
+            <div
+                className="relative dark:bg-dots-lighter dark:bg-gray-900 text-white min-h-screen pt-16 p-8 overflow-x-hidden">
                 <h1 className="mt-12 text-5xl font-extrabold mb-8 text-center text-purple-600">GameShelf</h1>
                 <div className="flex flex-wrap justify-center gap-8">
                     {games.map((game) => (
@@ -26,7 +85,7 @@ const Home = ({ games, auth }) => {
                                 className="w-full h-48 object-cover rounded-md mb-4"
                             />
                             <h2 className="text-2xl font-semibold text-purple-600 mb-2">{game.name}</h2>
-                            <p className="text-gray-400 mb-12">{game.description}</p>
+                            <TruncatedText text={game.description} maxLength={200} />
                             <p className="absolute bottom-4 right-4 text-gray-500 font-bold">{game.platform}</p>
                         </div>
                     ))}

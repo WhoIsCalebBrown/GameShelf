@@ -4,11 +4,11 @@ import {
     ComboboxOption,
     ComboboxOptions,
     Dialog,
-    DialogPanel,
     DialogBackdrop,
+    DialogPanel,
 } from '@headlessui/react';
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
-import { useState, useEffect, useCallback } from 'react';
+import {MagnifyingGlassIcon} from '@heroicons/react/20/solid';
+import {useCallback, useEffect, useState} from 'react';
 import axios from 'axios';
 import debounce from 'lodash.debounce';
 
@@ -16,7 +16,7 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
 }
 
-export default function CommandPalette() {
+export default function CommandPalette({gameModalCallback}) {
     const [query, setQuery] = useState('');
     const [open, setOpen] = useState(false);
     const [commands, setCommands] = useState([]);
@@ -38,11 +38,16 @@ export default function CommandPalette() {
             const games = response.data.map((game) => ({
                 id: game.id,
                 name: game.name,
-                action: () => alert(`Game selected: ${game.name}`)
+                action: () => openModal(game)
             }));
             setCommands(games);
         });
     }, 300), []);
+
+    const openModal = (game) => {
+        setOpen(false);
+        gameModalCallback(game)
+    }
 
     useEffect(() => {
         if (query !== '') {
@@ -91,11 +96,13 @@ export default function CommandPalette() {
                                 />
                             </div>
                             {commands.length > 0 && (
-                                <ComboboxOptions className="max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-gray-800">
+                                <ComboboxOptions
+                                    className="max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-gray-800">
                                     {commands.map((command) => (
                                         <ComboboxOption
                                             key={command.id}
                                             value={command}
+                                            // onClick={openModal}
                                             className={({ active }) =>
                                                 classNames(
                                                     'cursor-default select-none px-4 py-2',

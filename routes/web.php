@@ -31,10 +31,14 @@ Route::get('/dashboard', function () {
 
 Route::get('/home' , HomeController::class)->middleware('auth')->name('home');
 Route::get('/games/search', [GameController::class, 'searchWithScout'])->name('games.searchWithScout');
+
+Route::post('/game-user', [GameController::class, 'addToCollection'])->middleware('auth');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
 
 require __DIR__.'/auth.php';

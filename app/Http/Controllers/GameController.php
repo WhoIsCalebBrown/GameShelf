@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Game;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use MarcReichel\IGDBLaravel\Models\Game as IGDBGame;
 
 class GameController extends Controller
@@ -18,9 +20,21 @@ class GameController extends Controller
     public function searchWithScout(Request $request)
     {
         $gameName = $request->input('game_name');
-        $games = Game::search($gameName)->get();
+        $games    = Game::search($gameName)->get();
+
+        if (count($games) < 1) {
+            IGDBGame::fuzzySearch(
+                [
+                    'name',
+                    'involved_companies.company.name',
+                ],
+                $gameName
+            )->get();
+        }
+//        dd($games);
         return response()->json($games);
     }
+
     public function store(Request $request)
     {
         $game = IGDBGame::search("$request->game_name")->get();
@@ -34,10 +48,29 @@ class GameController extends Controller
         return response()->json(['message' => 'Game status updated']);
     }
 
-    public function destroy(Game $game)
+    public
+    function destroy(Game $game)
     {
         Auth::user()->games()->detach($game->id);
         return response()->json(['message' => 'Game removed from list']);
+    }
+
+    public function addToCollection(Request $request)
+    {
+        Log::info($request);
+        $request->validate([
+            'game_id' => 'required|exists:games,id', // Adjust based on your game data
+        ]);
+
+        DB::table('game_user')->insert([
+            'user_id'     => Auth::id(),
+            'game_id'     => $request->game_id,
+            'status'      => 'owned',
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ]);
+
+        return response()->json(['message' => 'Game added to collection'], 200);
     }
 
 }
