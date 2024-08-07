@@ -28,7 +28,6 @@ const Home = ({ games, auth }) => {
 
     const handleAddGame = () => {
         if (gameData) {
-            console.log(gameData.id + ' ' + gameData.name + ' ' + gameData.description);
             axios.post('/game-user', {
                 game_id: gameData.id,
                 game_name: gameData.name,
@@ -86,7 +85,7 @@ const Home = ({ games, auth }) => {
                             />
                             <h2 className="text-2xl font-semibold text-purple-600 mb-2">{game.name}</h2>
                             <TruncatedText text={game.description} maxLength={200} />
-                            <p className="absolute bottom-4 right-4 text-gray-500 font-bold">{game.platform}</p>
+                            <p className="absolute bottom-4 right-4 text-gray-500 font-bold">{game.platform.name}</p>
                         </div>
                     ))}
                 </div>

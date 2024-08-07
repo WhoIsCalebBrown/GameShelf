@@ -11,13 +11,14 @@ const TruncatedText = ({ text, maxLength = 200 }) => {
         <div>
             <p>
                 {isExpanded ? text : `${truncatedText}...`}
-                <span
-                    onClick={() => setIsExpanded(!isExpanded)}
-                    style={{ color: 'blue', cursor: 'pointer', marginLeft: '5px' }}
-                >
-                    {isExpanded ? ' Show less' : ' Read more'}
-                </span>
             </p>
+            <span
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="text-blue-500 hover:text-blue-700 cursor-pointer mb-4"
+                style={{ display: 'block', textAlign: 'right' }}
+            >
+                {isExpanded ? 'Show less' : 'Read more'}
+            </span>
         </div>
     );
 };

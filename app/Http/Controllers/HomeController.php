@@ -12,9 +12,10 @@ class HomeController extends Controller
     public function __invoke(Request $request)
     {
         $currentUser = auth::user();
+        $games = $currentUser->games()->with('platform')->get();
 
         return Inertia::render('Home', [
-            'games' => $currentUser->games,
+            'games' => $games,
             'auth' => $request->user(),
         ]);
     }

@@ -26,8 +26,6 @@ export default function NavBar({ user }) {
         document.getElementById('logout-form').submit();
     };
 
-    console.log(user.profile_photo);
-
     return (
         <Disclosure as="nav" className="bg-gray-800 fixed top-0 w-full z-50">
             {({ open }) => (

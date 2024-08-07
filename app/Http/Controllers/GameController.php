@@ -57,7 +57,6 @@ class GameController extends Controller
 
     public function addToCollection(Request $request)
     {
-        Log::info($request);
         $request->validate([
             'game_id' => 'required|exists:games,id', // Adjust based on your game data
         ]);
@@ -69,6 +68,8 @@ class GameController extends Controller
             'created_at'  => now(),
             'updated_at'  => now(),
         ]);
+
+
 
         return response()->json(['message' => 'Game added to collection'], 200);
     }
