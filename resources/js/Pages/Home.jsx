@@ -1,93 +1,117 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
 import NavBar from "@/Components/NavBar.jsx";
 import CommandPalette from "@/Components/CommandPalette.jsx";
-import {Description, Dialog, DialogPanel, DialogTitle} from "@headlessui/react";
-import {Inertia} from "@inertiajs/inertia";
-import TruncatedText from "@/Components/TruncatedText.jsx";
+import DescriptionModal from "@/Components/DescriptionModal.jsx";
+import { Description, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
+import axios from 'axios';
+import { Inertia } from '@inertiajs/inertia';
 
 const Home = ({ games, auth }) => {
+    const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [selectedGame, setSelectedGame] = useState(null);
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [gameData, setGameData] = useState(null);
-
-    const handleOpenModal = (data) => {
-        setGameData(data);
-        setIsModalOpen(true);
+    const handleOpenDescriptionModal = (game) => {
+        setSelectedGame(game);
+        setIsDescriptionModalOpen(true);
     };
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setGameData(null);
+    const handleCloseDescriptionModal = () => {
+        setIsDescriptionModalOpen(false);
+        setSelectedGame(null);
     };
 
-    const handleModalClick = (gameData) => {
-        setIsModalOpen((prev) => !prev);
-        setGameData(gameData);
-    }
+    const handleOpenAddModal = (game) => {
+        setSelectedGame(game);
+        setIsAddModalOpen(true);
+    };
+
+    const handleCloseAddModal = () => {
+        setIsAddModalOpen(false);
+        setSelectedGame(null);
+    };
 
     const handleAddGame = () => {
-        if (gameData) {
+        if (selectedGame) {
             axios.post('/game-user', {
-                game_id: gameData.id,
-                game_name: gameData.name,
-                game_description: gameData.description,
+                game_id: selectedGame.id,
+                game_name: selectedGame.name,
+                game_description: selectedGame.description,
             }).then(response => {
                 console.log(response.data.message);
-                setIsModalOpen(false);
-                setGameData(null);
+                setIsAddModalOpen(false);
+                setSelectedGame(null);
                 Inertia.reload();
-                // Optionally, refresh the page or update state to reflect changes
             }).catch(error => {
                 console.error('There was an error adding the game to your collection!', error);
             });
-
-
         }
-    }
+    };
 
     return (
         <>
-            <Head title="Your Video Game Collection Manager"/>
+            <Head title="Your Video Game Collection Manager" />
 
             <div>
-                <NavBar user={auth}/>
+                <NavBar user={auth} />
             </div>
 
-            <CommandPalette gameModalCallback={handleModalClick}/>
+            <CommandPalette gameModalCallback={handleOpenAddModal} />
 
-            {gameData && (
-                <Dialog open={isModalOpen} onClose={handleCloseModal}>
+            {selectedGame && (
+                <DescriptionModal
+                    isOpen={isDescriptionModalOpen}
+                    onClose={handleCloseDescriptionModal}
+                    game={selectedGame}
+                />
+            )}
+
+            {selectedGame && (
+                <Dialog open={isAddModalOpen} onClose={handleCloseAddModal}>
                     <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
-                        <DialogPanel className="max-w-lg space-y-4 border bg-white p-12">
-                            <DialogTitle className="font-bold">{gameData.name}</DialogTitle>
+                        <Dialog.Panel className="max-w-lg space-y-4 border bg-white p-12">
+                            <DialogTitle className="font-bold">{selectedGame.name}</DialogTitle>
                             <Description>Do you want to add this game to your library?</Description>
                             <div className="flex gap-4">
-                                <button onClick={handleCloseModal}>Cancel</button>
+                                <button onClick={handleCloseAddModal}>Cancel</button>
                                 <button onClick={handleAddGame}>Add</button>
                             </div>
-                        </DialogPanel>
+                        </Dialog.Panel>
                     </div>
                 </Dialog>
             )}
 
-            <div
-                className="relative dark:bg-dots-lighter dark:bg-gray-900 text-white min-h-screen pt-16 p-8 overflow-x-hidden">
+            <div className="relative dark:bg-dots-lighter dark:bg-gray-900 text-white min-h-screen pt-16 p-8 overflow-x-hidden">
                 <h1 className="mt-12 text-5xl font-extrabold mb-8 text-center text-purple-600">GameShelf</h1>
                 <div className="flex flex-wrap justify-center gap-8">
-                    {games.map((game) => (
-                        <div key={game.id}
-                             className="bg-gray-800 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300 p-6 w-72 relative">
-                            <img
-                                src="https://placehold.co/600x400"
-                                alt={game.name}
-                                className="w-full h-48 object-cover rounded-md mb-4"
-                            />
-                            <h2 className="text-2xl font-semibold text-purple-600 mb-2">{game.name}</h2>
-                            <TruncatedText text={game.description} maxLength={200} />
-                            <p className="absolute bottom-4 right-4 text-gray-500 font-bold">{game.platform.name}</p>
-                        </div>
-                    ))}
+                    {games.map((game) => {
+                        const isTruncated = game.description.length > 200;
+                        return (
+                            <div key={game.id} className="bg-gray-800 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300 p-6 w-72 relative">
+                                <img
+                                    src="https://placehold.co/600x400"
+                                    alt={game.name}
+                                    className="w-full h-48 object-cover rounded-md mb-4"
+                                />
+                                <h2 className="text-2xl font-semibold text-purple-600 mb-2">{game.name}</h2>
+                                <p className="text-gray-300 mb-4">
+                                    {isTruncated ? `${game.description.substring(0, 200)}...` : game.description}
+                                </p>
+                                <div className="flex justify-between items-end mt-auto">
+                                    {isTruncated && (
+                                        <button
+                                            onClick={() => handleOpenDescriptionModal(game)}
+                                            className="text-blue-500 hover:text-blue-700"
+                                        >
+                                            Read more
+                                        </button>
+                                    )}
+                                </div>
+                                <p className="absolute bottom-4 right-4 text-gray-500 font-bold">{game.platform.name}</p>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
 

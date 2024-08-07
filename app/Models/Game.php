@@ -23,6 +23,10 @@ class Game extends Model
     {
         return $this->hasMany(CoverArt::class);
     }
+    public function artworks(): HasMany
+    {
+        return $this->hasMany(Artwork::class);
+    }
 
     public function platform(): BelongsTo
     {
