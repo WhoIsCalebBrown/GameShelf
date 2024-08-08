@@ -1,34 +1,20 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Providers\database\seeders;
 
 use App\Models\Platform;
-use GuzzleHttp\Client;
-use Illuminate\Console\Command;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 
-class FetchIGDBPlatforms extends Command
+class PlatformSeeder extends Seeder
 {
-    protected $signature = 'import:platforms';
-    protected $description = 'Fetch platforms data from IGDB and store it in the database';
-
-    private $client;
-
-    public function __construct()
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
     {
-        parent::__construct();
-        $this->client = new Client([
-            'base_uri' => 'https://api.igdb.com/v4/',
-            'headers'  => [
-                'Client-ID'     => Config::get('internet-game-database.id'),
-                'Authorization' => 'Bearer ' . Config::get('internet-game-database.auth'),
-            ],
-        ]);
-    }
 
-    public function handle()
-    {
         $response = Http::withHeaders(['Client-ID' => Config::get('internet-game-database.id')])
             ->withToken(Config::get('internet-game-database.auth'))
             ->withBody('fields abbreviation,alternative_name,category,checksum,created_at,generation,name,platform_family,platform_logo,slug,summary,updated_at,url,versions,websites; limit 500; sort id asc;')
@@ -47,16 +33,8 @@ class FetchIGDBPlatforms extends Command
                     'platform_family'  => $platform->platform_family ?? null,
                     'platform_logo'    => $platform->platform_logo ?? null,
                     'slug'             => $platform->slug,
-//                    'websites'         => $platform->websites ?? []
-//                    'summary'  => $platform->summary ?? null,
-//                    'url'      => $platform->url ?? null,
-//                    'versions' => $platform->versions ?? [],
                 ],
-                [
-                ]
             );
         });
-
-        return Command::SUCCESS;
     }
 }

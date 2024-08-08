@@ -16,26 +16,11 @@ class ImportGamesFromIGDB extends Command
 
     protected $description = 'Import games from IGDB';
 
-    private $client;
-    private $batchSize = 500;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->client = new Client([
-            'base_uri' => 'https://api.igdb.com/v4/',
-            'headers'  => [
-                'Client-ID'     => Config::get('internet-game-database.id'),
-                'Authorization' => 'Bearer ' . Config::get('internet-game-database.auth'),
-            ],
-        ]);
-    }
-
     public function handle(): int
     {
         $response = Http::withHeaders(['Client-ID' => Config::get('internet-game-database.id')])
             ->withToken(Config::get('internet-game-database.auth'))
-            ->withBody('fields name, summary, first_release_date, platforms, genres; where rating > 95; sort rating asc; limit 500; ')
+            ->withBody('fields name, summary, first_release_date, platforms, genres, id; where rating > 95; sort rating asc; limit 500;')
             ->post('https://api.igdb.com/v4/games');
 
         $response = json_decode($response->getBody()->getContents());
@@ -48,6 +33,7 @@ class ImportGamesFromIGDB extends Command
                     'description' => optional($game)->summary ?? 'No description available',
                     'genre'       => optional($game)->genres ? $game->genres[0] : '',
                     'platform'    => optional($game)->platforms ? $game->platforms[0] : '',
+                    'igdb_id'     => $game->id,
                 ]
             );
         });

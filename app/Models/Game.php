@@ -47,7 +47,7 @@ class Game extends Model
         return 'games_index';
     }
 
-    protected $fillable = ['name', 'year', 'description', 'genre', 'platform'];
+    protected $fillable = ['name', 'year', 'description', 'genre', 'platform', 'igdb_id'];
 
 
     //Caleb when you come here next go to react command palette file and get it to search the input box on keystroke have nice day - past caleb

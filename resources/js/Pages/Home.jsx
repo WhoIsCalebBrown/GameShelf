@@ -12,6 +12,7 @@ const Home = ({ games, auth }) => {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [selectedGame, setSelectedGame] = useState(null);
 
+    console.log(games);
     const handleOpenDescriptionModal = (game) => {
         setSelectedGame(game);
         setIsDescriptionModalOpen(true);
@@ -87,10 +88,15 @@ const Home = ({ games, auth }) => {
                 <div className="flex flex-wrap justify-center gap-8">
                     {games.map((game) => {
                         const isTruncated = game.description.length > 200;
+                        const artworkUrl = game.artworks.length > 0
+                            ? `https://images.igdb.com/igdb/image/upload/t_1080p/${game.artworks[0].image_id}.jpg`
+
+                            : "https://placehold.co/600x400"; // Fallback image URL
+
                         return (
                             <div key={game.id} className="bg-gray-800 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300 p-6 w-72 relative">
                                 <img
-                                    src="https://placehold.co/600x400"
+                                    src={artworkUrl}
                                     alt={game.name}
                                     className="w-full h-48 object-cover rounded-md mb-4"
                                 />
