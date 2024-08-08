@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('genre');
             $table->string('platform');
             $table->integer('igdb_id');
+            $table->string('slug');
         });
     }
 

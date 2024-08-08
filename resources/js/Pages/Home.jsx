@@ -12,7 +12,6 @@ const Home = ({ games, auth }) => {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [selectedGame, setSelectedGame] = useState(null);
 
-    console.log(games);
     const handleOpenDescriptionModal = (game) => {
         setSelectedGame(game);
         setIsDescriptionModalOpen(true);
@@ -89,7 +88,7 @@ const Home = ({ games, auth }) => {
                     {games.map((game) => {
                         const isTruncated = game.description.length > 200;
                         const artworkUrl = game.artworks.length > 0
-                            ? `https://images.igdb.com/igdb/image/upload/t_1080p/${game.artworks[0].image_id}.jpg`
+                            ? `https://images.igdb.com/igdb/image/upload/t_720p/${game.artworks[0].image_id}.jpg`
 
                             : "https://placehold.co/600x400"; // Fallback image URL
 
@@ -98,9 +97,11 @@ const Home = ({ games, auth }) => {
                                 <img
                                     src={artworkUrl}
                                     alt={game.name}
-                                    className="w-full h-48 object-cover rounded-md mb-4"
+                                    className="w-full h-48 object-scale-down rounded-md mb-4"
                                 />
-                                <h2 className="text-2xl font-semibold text-purple-600 mb-2">{game.name}</h2>
+                                <h2 className="text-2xl font-semibold text-purple-600 mb-2">
+                                    <a href={`/games/${game.slug}`}>{game.name}</a>
+                                </h2>
                                 <p className="text-gray-300 mb-4">
                                     {isTruncated ? `${game.description.substring(0, 200)}...` : game.description}
                                 </p>

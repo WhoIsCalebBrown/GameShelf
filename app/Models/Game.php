@@ -33,6 +33,11 @@ class Game extends Model
         return $this->belongsTo(Platform::class, 'platform');
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     public function toSearchableArray()
     {
         $array = $this->toArray();
@@ -47,7 +52,7 @@ class Game extends Model
         return 'games_index';
     }
 
-    protected $fillable = ['name', 'year', 'description', 'genre', 'platform', 'igdb_id'];
+    protected $fillable = ['name', 'year', 'description', 'genre', 'platform', 'igdb_id', 'slug'];
 
 
     //Caleb when you come here next go to react command palette file and get it to search the input box on keystroke have nice day - past caleb

@@ -6,11 +6,19 @@ use App\Models\Game;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 use MarcReichel\IGDBLaravel\Models\Game as IGDBGame;
 
 class GameController extends Controller
 {
+    public function show(Game $game)
+    {
+        $game->load(['platform', 'artworks']);
+        return Inertia::render('Game', [
+            'game' => $game,
+        ]);
+    }
+
     public function index()
     {
         $games = Auth::user()->games;
@@ -62,13 +70,12 @@ class GameController extends Controller
         ]);
 
         DB::table('game_user')->insert([
-            'user_id'     => Auth::id(),
-            'game_id'     => $request->game_id,
-            'status'      => 'owned',
-            'created_at'  => now(),
-            'updated_at'  => now(),
+            'user_id'    => Auth::id(),
+            'game_id'    => $request->game_id,
+            'status'     => 'owned',
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
-
 
 
         return response()->json(['message' => 'Game added to collection'], 200);

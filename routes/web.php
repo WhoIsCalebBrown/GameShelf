@@ -3,7 +3,6 @@
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -20,7 +19,7 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
+        'canLogin'    => Route::has('login'),
         'canRegister' => Route::has('register'),
     ]);
 });
@@ -29,8 +28,10 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/home' , HomeController::class)->middleware('auth')->name('home');
+Route::get('/home', HomeController::class)->middleware('auth')->name('home');
+
 Route::get('/games/search', [GameController::class, 'searchWithScout'])->name('games.searchWithScout');
+Route::get('/games/{game:slug}', [GameController::class, 'show'])->name('games.show');
 
 Route::post('/game-user', [GameController::class, 'addToCollection'])->middleware('auth');
 
@@ -41,4 +42,4 @@ Route::middleware('auth')->group(function () {
 });
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

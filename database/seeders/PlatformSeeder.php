@@ -4,11 +4,10 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class GameSeeder extends Seeder
+class PlatformSeeder extends Seeder
 {
     public function run(): void
     {
-        exec('php artisan import:games');
-
+        exec('php artisan import:platforms');
     }
 }
