@@ -11,11 +11,12 @@ use MarcReichel\IGDBLaravel\Models\Game as IGDBGame;
 
 class GameController extends Controller
 {
-    public function show(Game $game)
+    public function show(Game $game, Request $request)
     {
-        $game->load(['platform', 'artworks']);
+        $game->load(['platforms', 'artworks',  'coverArts']);
         return Inertia::render('Game', [
             'game' => $game,
+            'auth' => $request->user(),
         ]);
     }
 

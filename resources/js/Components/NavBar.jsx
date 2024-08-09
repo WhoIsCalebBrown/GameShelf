@@ -4,7 +4,7 @@ import { Fragment } from 'react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
 const navigation = [
-    { name: 'My Shelf', href: '#', current: true },
+    { name: 'My Shelf', href: '/home', current: true },
     { name: 'New and Trending', href: '#', current: false },
     // { name: 'Projects', href: '#', current: false },
     // { name: 'Calendar', href: '#', current: false },

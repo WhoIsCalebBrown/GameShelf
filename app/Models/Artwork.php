@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Artwork extends Model
 {
-    use HasFactory;
 
     protected $guarded = [];
 

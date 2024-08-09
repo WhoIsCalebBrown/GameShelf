@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Platform extends Model
 {
@@ -16,9 +16,10 @@ class Platform extends Model
 
     protected $guarded = [];
 
-    public function games(): HasMany
+    public function platforms(): BelongsToMany
     {
-        return $this->hasMany(Game::class);
+        return $this->belongsToMany(Platform::class, 'games', 'platform' );
     }
+
 
 }

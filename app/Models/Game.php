@@ -23,15 +23,17 @@ class Game extends Model
     {
         return $this->hasMany(CoverArt::class);
     }
+
     public function artworks(): HasMany
     {
         return $this->hasMany(Artwork::class);
     }
 
-    public function platform(): BelongsTo
+    public function platforms(): BelongsTo
     {
-        return $this->belongsTo(Platform::class, 'platform');
+        return $this->belongsTo(Platform::class, 'platforms', 'id');
     }
+
 
     public function getRouteKeyName(): string
     {
@@ -43,16 +45,17 @@ class Game extends Model
         $array = $this->toArray();
 
         // Ensure the primary key is used as the objectID
-        $array['objectID'] = (string) $this->id;
+        $array['objectID'] = (string)$this->id;
 
         return $array;
     }
+
     public function searchableAs(): string
     {
         return 'games_index';
     }
 
-    protected $fillable = ['name', 'year', 'description', 'genre', 'platform', 'igdb_id', 'slug'];
+    protected $fillable = ['name', 'year', 'description', 'genre', 'igdb_id', 'slug', 'platforms'];
 
 
     //Caleb when you come here next go to react command palette file and get it to search the input box on keystroke have nice day - past caleb

@@ -18,7 +18,7 @@ class ImportGamesFromIGDB extends Command
     {
         $response = Http::withHeaders(['Client-ID' => Config::get('internet-game-database.id')])
             ->withToken(Config::get('internet-game-database.auth'))
-            ->withBody('fields name, summary, first_release_date, platforms, genres, id, slug; where rating > 86; sort rating asc; limit 200;')
+            ->withBody('fields name, summary, first_release_date, platforms, genres, id, slug; where rating > 95; sort rating asc; limit 100;')
             ->post('https://api.igdb.com/v4/games');
 
         $response = json_decode($response->getBody()->getContents());
@@ -30,7 +30,7 @@ class ImportGamesFromIGDB extends Command
                     'year'        => Carbon::parse(optional($game)->first_release_date)->year,
                     'description' => optional($game)->summary ?? 'No description available',
                     'genre'       => optional($game)->genres ? $game->genres[0] : '',
-                    'platform'    => optional($game)->platforms ? $game->platforms[0] : '',
+                    'platforms'    => optional($game)->platforms ? $game->platforms[0] : '',
                     'igdb_id'     => $game->id,
                     'slug'        => $game->slug,
                 ]

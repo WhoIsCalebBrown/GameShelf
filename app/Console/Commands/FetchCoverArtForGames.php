@@ -2,16 +2,17 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Game;
 use App\Models\Artwork;
+use App\Models\CoverArt;
+use App\Models\Game;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 
-class FetchArtworkForGames extends Command
+class FetchCoverArtForGames extends Command
 {
-    protected $signature = 'fetch:artwork';
-    protected $description = 'Fetch artwork for games that have none';
+    protected $signature = 'fetch:cover-art';
+    protected $description = 'Fetch cover-art for games that have none';
 
     /**
      * Execute the console command.
@@ -20,10 +21,10 @@ class FetchArtworkForGames extends Command
      */
     public function handle(): int
     {
-        $games = Game::doesntHave('artworks')->get();
+        $games = Game::doesntHave('coverArts')->get();
 
         foreach ($games as $game) {
-            $this->fetchArtworkForGame($game);
+            $this->fetchCoverArtForGame($game);
         }
 
         $this->info('Cover Art fetching completed.');
@@ -37,22 +38,20 @@ class FetchArtworkForGames extends Command
      * @param  \App\Models\Game  $game
      * @return void
      */
-    protected function fetchArtworkForGame(Game $game)
+    protected function fetchCoverArtForGame(Game $game): void
     {
         // Fetch artwork data from an external API
         $response = Http::withHeaders(['Client-ID' => Config::get('internet-game-database.id')])
             ->withToken(Config::get('internet-game-database.auth'))
             ->withBody('fields game,image_id,url, height, width; where game = ' . $game->igdb_id . ';')
-            ->post('https://api.igdb.com/v4/artworks');
-
-//        $response = json_decode($response->getBody()->getContents());
+            ->post('https://api.igdb.com/v4/covers');
 
         if ($response->successful()) {
             $artworkData = $response->json();
 
             // Create new artwork records for the game
             foreach ($artworkData as $data) {
-                Artwork::create([
+                CoverArt::create([
                     'game_id' => $game->id,
                     'height' => $data['height'],
                     'image_id' => $data['image_id'],

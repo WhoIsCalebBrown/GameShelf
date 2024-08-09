@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('cover_art', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('game_id');
-            $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
+            $table->foreignId('game_id')->constrained()->onDelete('cascade');
+            $table->string('image_id');
             $table->string('url');
+            $table->integer('height');
+            $table->integer('width');
             $table->timestamps();
         });
+
     }
 
     /**

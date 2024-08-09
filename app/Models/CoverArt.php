@@ -10,8 +10,10 @@ class CoverArt extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
     public function game(): BelongsTo
     {
-       return $this->belongsTo(Game::class);
+        return $this->belongsTo(Game::class, 'game_id', 'igdb_id');
     }
+
 }

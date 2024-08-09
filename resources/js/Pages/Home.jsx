@@ -32,6 +32,7 @@ const Home = ({ games, auth }) => {
         setSelectedGame(null);
     };
 
+    console.log(games);
     const handleAddGame = () => {
         if (selectedGame) {
             axios.post('/game-user', {
@@ -87,8 +88,8 @@ const Home = ({ games, auth }) => {
                 <div className="flex flex-wrap justify-center gap-8">
                     {games.map((game) => {
                         const isTruncated = game.description.length > 200;
-                        const artworkUrl = game.artworks.length > 0
-                            ? `https://images.igdb.com/igdb/image/upload/t_720p/${game.artworks[0].image_id}.jpg`
+                        const artworkUrl = game.cover_arts.length > 0
+                            ? `https://images.igdb.com/igdb/image/upload/t_720p/${game.cover_arts[0].image_id}.jpg`
 
                             : "https://placehold.co/600x400"; // Fallback image URL
 
@@ -115,7 +116,7 @@ const Home = ({ games, auth }) => {
                                         </button>
                                     )}
                                 </div>
-                                <p className="absolute bottom-4 right-4 text-gray-500 font-bold">{game.platform.name}</p>
+                                <p className="absolute bottom-4 right-4 text-gray-500 font-bold">{game.platforms.name}</p>
                             </div>
                         );
                     })}
