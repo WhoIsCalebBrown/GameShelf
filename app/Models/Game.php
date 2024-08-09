@@ -34,6 +34,12 @@ class Game extends Model
         return $this->belongsTo(Platform::class, 'platforms', 'id');
     }
 
+    public function genres(): BelongsTo
+    {
+        return $this->belongsTo(Genre::class, 'genre', 'id');
+    }
+
+
 
     public function getRouteKeyName(): string
     {

@@ -45,19 +45,17 @@ class FetchArtworkForGames extends Command
             ->withBody('fields game,image_id,url, height, width; where game = ' . $game->igdb_id . ';')
             ->post('https://api.igdb.com/v4/artworks');
 
-//        $response = json_decode($response->getBody()->getContents());
-
         if ($response->successful()) {
             $artworkData = $response->json();
 
             // Create new artwork records for the game
-            foreach ($artworkData as $data) {
-                Artwork::create([
+            foreach ($artworkData as $artwork) {
+                Artwork::updateOrCreate([
                     'game_id' => $game->id,
-                    'height' => $data['height'],
-                    'image_id' => $data['image_id'],
-                    'url' => $data['url'],
-                    'width' => $data['width'],
+                    'height' => $artwork['height'] ?? $artwork[0]->height,
+                    'image_id' => $artwork['image_id'] ?? $artwork[0]->image_id,
+                    'url' => $artwork['url'] ?? $artwork[0]->url,
+                    'width' => $artwork['width'] ?? $artwork[0]->width,
                 ]);
             }
         } else {

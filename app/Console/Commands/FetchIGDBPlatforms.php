@@ -13,20 +13,6 @@ class FetchIGDBPlatforms extends Command
     protected $signature = 'import:platforms';
     protected $description = 'Fetch platforms data from IGDB and store it in the database';
 
-    private $client;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->client = new Client([
-            'base_uri' => 'https://api.igdb.com/v4/',
-            'headers'  => [
-                'Client-ID'     => Config::get('internet-game-database.id'),
-                'Authorization' => 'Bearer ' . Config::get('internet-game-database.auth'),
-            ],
-        ]);
-    }
-
     public function handle()
     {
         $response = Http::withHeaders(['Client-ID' => Config::get('internet-game-database.id')])
@@ -47,12 +33,7 @@ class FetchIGDBPlatforms extends Command
                     'platform_family'  => $platform->platform_family ?? null,
                     'platform_logo'    => $platform->platform_logo ?? null,
                     'slug'             => $platform->slug,
-//                    'websites'         => $platform->websites ?? []
-//                    'summary'  => $platform->summary ?? null,
-//                    'url'      => $platform->url ?? null,
-//                    'versions' => $platform->versions ?? [],
-                ],
-                [
+
                 ]
             );
         });

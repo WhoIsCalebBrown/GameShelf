@@ -44,7 +44,7 @@ const GameDetail = ({ game, auth }) => {
                         <div className="w-2/3">
                             <h1 className="text-5xl font-bold mb-4">{game.name}</h1>
                             <p className="text-gray-400 mb-2"><strong>Released:</strong> {game.year}</p>
-                            <p className="text-gray-400 mb-2"><strong>Genre:</strong> {game.genre}</p>
+                            <p className="text-gray-400 mb-2"><strong>Genre:</strong> {game.genres.name}</p>
                             <p className="text-gray-400 mb-4"><strong>Platform:</strong> {game.platforms.name}</p>
                             <p className="text-gray-300">{game.description}</p>
                         </div>

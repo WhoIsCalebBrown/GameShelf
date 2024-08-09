@@ -43,20 +43,20 @@ class FetchCoverArtForGames extends Command
         // Fetch artwork data from an external API
         $response = Http::withHeaders(['Client-ID' => Config::get('internet-game-database.id')])
             ->withToken(Config::get('internet-game-database.auth'))
-            ->withBody('fields game,image_id,url, height, width; where game = ' . $game->igdb_id . ';')
+            ->withBody('fields game, image_id, url, height, width; where game = ' . $game->igdb_id . ';')
             ->post('https://api.igdb.com/v4/covers');
 
         if ($response->successful()) {
             $artworkData = $response->json();
 
             // Create new artwork records for the game
-            foreach ($artworkData as $data) {
+            foreach ($artworkData as $coverArt) {
                 CoverArt::create([
                     'game_id' => $game->id,
-                    'height' => $data['height'],
-                    'image_id' => $data['image_id'],
-                    'url' => $data['url'],
-                    'width' => $data['width'],
+                    'height' => $coverArt['height'],
+                    'image_id' => $coverArt['image_id'],
+                    'url' => $coverArt['url'],
+                    'width' => $coverArt['width'],
                 ]);
             }
         } else {
