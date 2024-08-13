@@ -12,9 +12,12 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name');
-            $table->integer('year');
-            $table->string('description', 1000);
-
+            $table->year('year');
+            $table->text('description');
+            $table->string('genre');
+            $table->string('platforms');
+            $table->integer('igdb_id');
+            $table->string('slug');
         });
     }
 
