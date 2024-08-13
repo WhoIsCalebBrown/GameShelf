@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
-import NavBar from "@/Components/NavBar.jsx";
+import Default from '@/Layouts/Default';
 import CommandPalette from "@/Components/CommandPalette.jsx";
 import DescriptionModal from "@/Components/DescriptionModal.jsx";
 import { Description, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
@@ -51,12 +51,8 @@ const Home = ({ games, auth }) => {
     };
 
     return (
-        <>
+        <Default user={auth}>
             <Head title="Your Video Game Collection Manager" />
-
-            <div>
-                <NavBar user={auth} />
-            </div>
 
             <CommandPalette gameModalCallback={handleOpenAddModal} />
 
@@ -90,7 +86,6 @@ const Home = ({ games, auth }) => {
                         const isTruncated = game.description.length > 200;
                         const artworkUrl = game.cover_arts.length > 0
                             ? `https://images.igdb.com/igdb/image/upload/t_720p/${game.cover_arts[0].image_id}.jpg`
-
                             : "https://placehold.co/600x400"; // Fallback image URL
 
                         return (
@@ -147,7 +142,7 @@ const Home = ({ games, auth }) => {
                     border: 3px solid #1a202c;
                 }
             `}</style>
-        </>
+        </Default>
     );
 };
 

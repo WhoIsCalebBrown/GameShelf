@@ -30,7 +30,6 @@ class FetchArtworkForGames extends Command
 
         return 0;
     }
-
     /**
      * Fetch artwork for a specific game.
      *
