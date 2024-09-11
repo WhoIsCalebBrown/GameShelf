@@ -6,6 +6,7 @@ import DescriptionModal from "@/Components/DescriptionModal.jsx";
 import { Description, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import axios from 'axios';
 import { Inertia } from '@inertiajs/inertia';
+import RunawayButton from "../Components/RunawayButton.jsx";
 
 const Home = ({ games, auth }) => {
     const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
@@ -116,6 +117,7 @@ const Home = ({ games, auth }) => {
                         );
                     })}
                 </div>
+                <RunawayButton />
             </div>
 
             <style>{`
