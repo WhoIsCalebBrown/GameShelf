@@ -39,6 +39,10 @@ class Game extends Model
         return $this->belongsTo(Genre::class, 'genre', 'id');
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 
 
     public function getRouteKeyName(): string
