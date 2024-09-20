@@ -1,9 +1,10 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentController;
+
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,12 +18,9 @@ use App\Http\Controllers\CommentController;
 */
 
 
-Route::get('/games/{gameId}/comments', [CommentController::class, 'index']);
-Route::post('/games/{gameId}/comments', [CommentController::class, 'store']);
+Route::get('/games/{gameId}/comments', [CommentController::class, 'getComments']);
+
+Route::post('/games/{gameId}/comments', [CommentController::class, 'store'])->middleware('auth:sanctum');
 
 Route::post('/{likableType}/{likableId}/like', [LikeController::class, 'like']);
 Route::delete('/{likableType}/{likableId}/unlike', [LikeController::class, 'unlike']);
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});

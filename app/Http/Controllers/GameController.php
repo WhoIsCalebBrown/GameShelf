@@ -13,7 +13,7 @@ class GameController extends Controller
 {
     public function show(Game $game, Request $request)
     {
-        $game->load(['platforms', 'artworks',  'coverArts', 'genres']);
+        $game->load(['platforms', 'artworks',  'coverArts', 'genres', 'comments.user']);
         return Inertia::render('Game', [
             'game' => $game,
             'auth' => $request->user(),
