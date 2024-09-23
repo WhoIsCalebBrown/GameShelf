@@ -22,19 +22,15 @@ class CommentController extends Controller
     }
     public function store(Request $request, $gameId)
     {
-
-        Log::info("TEST");
-
-        $user = auth::user();
-        Log::info($user);
-
         $request->validate([
             'text' => 'required|string|max:255',
+            'parent_id' => 'nullable|exists:comments,id',
         ]);
 
         $comment = Comment::create([
             'text' => $request->input('text'),
             'game_id' => $gameId,
+            'parent_id' => $request->input('parent_id'),
             'user_id' => auth::id(),
         ]);
 

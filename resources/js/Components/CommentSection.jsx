@@ -59,7 +59,7 @@ const CommentSection = ({ gameId, initialComments, user }) => {
                             <img src={comment.user?.profile_photo || "https://i.pravatar.cc/300"} alt="User Avatar" className="w-10 h-10 rounded-full mr-3" />
                             <div>
                                 <span className="font-semibold">{comment.user?.name}</span>
-                                <span className="text-sm text-gray-500 ml-2">1 day ago (edited)</span>
+                                <span className="text-sm text-gray-500 ml-2">{comment.created_at}</span>
                             </div>
                         </div>
                         <p className="mb-2">{comment.text}</p>
