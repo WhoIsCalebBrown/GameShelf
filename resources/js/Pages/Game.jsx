@@ -1,7 +1,7 @@
 // GameDetail.jsx
 import React from 'react';
-import CommentSection from "@/Components/CommentSection.jsx";
-import Default from "@/Layouts/Default.jsx";
+import CommentSection from "../Components/CommentSection.jsx";
+import Default from "../Layouts/Default.jsx";
 
 const GameDetail = ({ game, auth }) => {
     // Assume comments are part of the game data

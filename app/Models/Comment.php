@@ -17,19 +17,20 @@ class Comment extends Model
         return $this->belongsTo(Game::class);
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
+    public function replies()
+    {
+        return $this->hasMany(Comment::class, 'parent_id')->with('replies.user');
+    }
     public function likes()
     {
         return $this->morphMany(Like::class, 'likable');
     }
 
-    public function replies()
-    {
-        Log::info(collect($this->hasMany(Comment::class, 'parent_id')));
-        return $this->hasMany(Comment::class, 'parent_id');
-    }
+
 
 }

@@ -3,6 +3,8 @@ import axios from 'axios';
 import Comment from './Comment';
 
 const CommentSection = ({ gameId, initialComments, user }) => {
+
+    console.log(initialComments);
     const [comments, setComments] = useState(initialComments || []);
     const [newComment, setNewComment] = useState('');
 
@@ -11,7 +13,7 @@ const CommentSection = ({ gameId, initialComments, user }) => {
 
         const tempComment = {
             id: Date.now(),
-            game_id: gameId, // Ensure this is defined
+            game_id: gameId,
             user: user,
             text: newComment,
         };
@@ -68,7 +70,7 @@ const CommentSection = ({ gameId, initialComments, user }) => {
                 </button>
             </form>
             <ul>
-                {comments.map((comment) => (
+                {comments.filter(comment => comment.parent_id === null).map((comment) => (
                     <Comment key={comment.id} comment={comment} onReply={handleReplySubmit} />
                 ))}
             </ul>

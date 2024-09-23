@@ -19,7 +19,7 @@ class CommentController extends Controller
     {
         $comments = Comment::where('game_id', $gameId)
             ->whereNull('parent_id') // Fetch only top-level comments
-            ->with(['replies']) // Eager load replies and their users
+            ->with('replies.replies.user')
             ->get();
 
         return response()->json($comments);
