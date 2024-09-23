@@ -17,21 +17,26 @@ class CommentController extends Controller
 
     public function getComments($gameId)
     {
-        $comments = Comment::with('user')->where('game_id', $gameId)->get();
+        $comments = Comment::where('game_id', $gameId)
+            ->whereNull('parent_id') // Fetch only top-level comments
+            ->with(['replies']) // Eager load replies and their users
+            ->get();
+
         return response()->json($comments);
     }
-    public function store(Request $request, $gameId)
+    public function store(Request $request)
     {
         $request->validate([
             'text' => 'required|string|max:255',
+            'game_id' => 'required|exists:games,id', // Validate game_id
             'parent_id' => 'nullable|exists:comments,id',
         ]);
 
         $comment = Comment::create([
             'text' => $request->input('text'),
-            'game_id' => $gameId,
+            'user_id' => Auth::id(),
+            'game_id' => $request->input('game_id'), // Ensure game_id is set
             'parent_id' => $request->input('parent_id'),
-            'user_id' => auth::id(),
         ]);
 
         return response()->json($comment, 201);

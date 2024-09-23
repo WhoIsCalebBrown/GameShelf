@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Comment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['game_id', 'user_id', 'text', 'created_at'];
+    protected $fillable = ['game_id', 'user_id','parent_id', 'text', 'created_at'];
 
     public function game()
     {
@@ -23,6 +24,12 @@ class Comment extends Model
     public function likes()
     {
         return $this->morphMany(Like::class, 'likable');
+    }
+
+    public function replies()
+    {
+        Log::info(collect($this->hasMany(Comment::class, 'parent_id')));
+        return $this->hasMany(Comment::class, 'parent_id');
     }
 
 }

@@ -15,7 +15,6 @@ return new class extends Migration
             $table->text('text');
             $table->foreignId('parent_id')->nullable()->constrained('comments')->onDelete('cascade');
             $table->timestamps();
-
             $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 

@@ -11,7 +11,7 @@ const CommentSection = ({ gameId, initialComments, user }) => {
 
         const tempComment = {
             id: Date.now(),
-            game_id: gameId,
+            game_id: gameId, // Ensure this is defined
             user: user,
             text: newComment,
         };
@@ -20,7 +20,7 @@ const CommentSection = ({ gameId, initialComments, user }) => {
         setNewComment('');
 
         try {
-            const response = await axios.post(`/api/games/${gameId}/comments`, { text: newComment });
+            const response = await axios.post(`/api/games/${gameId}/comments`, { text: newComment, game_id: gameId });
             setComments((prevComments) =>
                 prevComments.map((comment) =>
                     comment.id === tempComment.id ? response.data : comment
@@ -32,6 +32,20 @@ const CommentSection = ({ gameId, initialComments, user }) => {
                 prevComments.filter((comment) => comment.id !== tempComment.id)
             );
             alert('Failed to add comment. Please try again.');
+        }
+    };
+
+    const handleReplySubmit = async (parentId, replyText) => {
+        try {
+            const response = await axios.post(`/api/games/${gameId}/comments`, { text: replyText, parent_id: parentId, game_id: gameId });
+            setComments((prevComments) =>
+                prevComments.map(comment =>
+                    comment.id === parentId ? {...comment, replies: [...(comment.replies || []), response.data]} : comment
+                )
+            );
+        } catch (error) {
+            console.error('Error posting reply:', error.response?.data || error.message);
+            alert('Failed to add reply. Please try again.');
         }
     };
 
@@ -55,7 +69,7 @@ const CommentSection = ({ gameId, initialComments, user }) => {
             </form>
             <ul>
                 {comments.map((comment) => (
-                    <Comment key={comment.id} comment={comment} />
+                    <Comment key={comment.id} comment={comment} onReply={handleReplySubmit} />
                 ))}
             </ul>
         </div>
