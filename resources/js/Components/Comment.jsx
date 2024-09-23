@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
-const Comment = ({ comment, onReply, depth = 0 }) => {
+const Comment = ({comment, onReply, depth = 0}) => {
     const [showReplyForm, setShowReplyForm] = useState(false);
     const [showReplies, setShowReplies] = useState(false);
     const [replyText, setReplyText] = useState('');
@@ -13,7 +13,7 @@ const Comment = ({ comment, onReply, depth = 0 }) => {
     };
 
     return (
-        <li className="mb-4 p-4 bg-gray-800 text-gray-300 rounded-lg shadow-md">
+        <li className="mb-4 p-4 bg-gray-800 text-gray-300 rounded-lg">
             <div className="flex items-start mb-2">
                 <img src={comment.user?.profile_photo || "https://i.pravatar.cc/300"} alt="User Avatar"
                      className="w-10 h-10 rounded-full mr-3"/>
@@ -79,8 +79,8 @@ const Comment = ({ comment, onReply, depth = 0 }) => {
                             <button
                                 onClick={() => setShowReplies(!showReplies)}
                                 className={`mt-2 flex items-center text-blue-500 hover:bg-blue-700 hover:text-white px-2 py-1 rounded transition-colors`}
-                            style={{textDecoration: 'none'}}
-                        >
+                                style={{textDecoration: 'none'}}
+                            >
                             <span className={`transition-transform duration-200 ${showReplies ? 'rotate-180' : ''}`}>
                                 {showReplies ? (
                                     <svg fill="currentColor" height="15px" width="15px" version="1.1" id="Layer_1"
@@ -100,23 +100,23 @@ const Comment = ({ comment, onReply, depth = 0 }) => {
                                     </svg>
                                 )}
                             </span>
-                            <span className="ml-1">{comment.replies.length} replies</span>
-                        </button>
-                    {showReplies && (
-                        <ul className="ml-8 mt-4">
-                    {comment.replies.map(reply => (
-                        <Comment key={reply.id} comment={reply} onReply={onReply} depth={depth + 1}/>
-                ))}
-            </ul>
-            )}
-        </>
-    )
-}
-</div>
-</div>
-</li>
-)
-    ;
+                                <span className="ml-1">{comment.replies.length} replies</span>
+                            </button>
+                            {showReplies && (
+                                <ul className="ml-8 mt-4">
+                                    {comment.replies.map(reply => (
+                                            <Comment key={reply.id} comment={reply} onReply={onReply} depth={depth + 1}/>
+                                        )
+                                    )}
+                                </ul>
+                            )}
+                        </>
+                    )
+                    }
+                </div>
+            </div>
+        </li>
+    );
 };
 
 export default Comment;
