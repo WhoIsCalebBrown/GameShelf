@@ -72,7 +72,7 @@ const CommentSection = ({ gameId, initialComments, user }) => {
                             </button>
                             <button className="text-blue-500 hover:underline">Reply</button>
                         </div>
-                        <button className="mt-2 text-blue-500 hover:underline">251 replies</button>
+                        <button className="mt-2 text-blue-500 hover:underline">Replies</button>
                     </li>
                 ))}
             </ul>
