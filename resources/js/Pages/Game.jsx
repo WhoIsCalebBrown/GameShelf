@@ -12,7 +12,7 @@ const GameDetail = ({ game, auth }) => {
             <div className="relative min-h-screen bg-gray-800 text-white">
                 <div className="pt-32">
                     <div
-                        className="absolute inset-0 bg-contain bg-no-repeat  z-0"
+                        className="absolute inset-0 bg-contain bg-no-repeat bg-center z-0"
                         style={{
                             backgroundImage: `url(${game.artworks.length > 0 ? `https://images.igdb.com/igdb/image/upload/t_1080p/${game.artworks[0].image_id}.jpg` : "https://placehold.co/1280x720"})`,
                         }}

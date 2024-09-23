@@ -105,9 +105,8 @@ const Comment = ({comment, onReply, depth = 0}) => {
                             {showReplies && (
                                 <ul className="ml-8 mt-4">
                                     {comment.replies.map(reply => (
-                                            <Comment key={reply.id} comment={reply} onReply={onReply} depth={depth + 1}/>
-                                        )
-                                    )}
+                                        <Comment key={reply.id} comment={reply} onReply={onReply}/>
+                                    ))}
                                 </ul>
                             )}
                         </>
