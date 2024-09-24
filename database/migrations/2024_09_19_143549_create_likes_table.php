@@ -13,8 +13,13 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('likable_id');
             $table->string('likable_type');
+            $table->string('type')->default('like');
             $table->timestamps();
-            $table->unique(['user_id', 'likable_type']);
+
+            // Unique constraint on user_id, likable_id, and likable_type
+            $table->unique(['user_id', 'likable_id', 'likable_type']);
+
+            // Foreign key constraint
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }

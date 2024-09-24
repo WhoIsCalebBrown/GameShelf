@@ -4,12 +4,38 @@ const Comment = ({comment, onReply, depth = 0}) => {
     const [showReplyForm, setShowReplyForm] = useState(false);
     const [showReplies, setShowReplies] = useState(false);
     const [replyText, setReplyText] = useState('');
+    const [likesCount, setLikesCount] = useState(comment.likes_count || 0);
+    const [dislikesCount, setDislikesCount] = useState(comment.dislikes_count || 0);
+    const [liked, setLiked] = useState(comment.is_liked || false);
+    const [disliked, setDisliked] = useState(comment.is_disliked || false);
 
     const handleReplySubmit = (e) => {
         e.preventDefault();
         onReply(comment.id, replyText);
         setReplyText('');
         setShowReplyForm(false);
+    };
+
+    const handleLike = async () => {
+        try {
+            const response = await axios.post(`/api/comments/${comment.id}/like`);
+            setLikesCount(response.data.likes_count);
+            setLiked(true);
+            setDisliked(false); // Ensure dislike is reset
+        } catch (error) {
+            console.error('Error liking comment:', error);
+        }
+    };
+
+    const handleDislike = async () => {
+        try {
+            const response = await axios.post(`/api/comments/${comment.id}/dislike`);
+            setDislikesCount(response.data.dislikes_count);
+            setDisliked(true);
+            setLiked(false); // Ensure like is reset
+        } catch (error) {
+            console.error('Error disliking comment:', error);
+        }
     };
 
     return (
@@ -26,7 +52,9 @@ const Comment = ({comment, onReply, depth = 0}) => {
                     <p className="mb-2">{comment.text}</p>
                     <div className="flex items-center space-x-4 text-sm text-gray-400">
                         <button
-                            className="flex items-center text-blue-500 hover:bg-blue-700 hover:text-white px-2 py-1 rounded transition-colors">
+                            onClick={liked ? handleUnlike : handleLike}
+                            className={`flex items-center ${liked ? 'text-red-500' : 'text-blue-500'} hover:bg-blue-700 hover:text-white px-2 py-1 rounded transition-colors`}
+                        >
                             <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 24 24"
                                  xmlns="http://www.w3.org/2000/svg" className="mr-1">
                                 <g id="Complete">
@@ -38,10 +66,12 @@ const Comment = ({comment, onReply, depth = 0}) => {
                                     </g>
                                 </g>
                             </svg>
-                            {comment.likes_count || 0}
+                            {likesCount}
                         </button>
                         <button
-                            className="flex items-center text-blue-500 hover:bg-blue-700 hover:text-white px-2 py-1 rounded transition-colors">
+                            onClick={disliked ? handleUnlike : handleDislike}
+                            className={`flex items-center ${disliked ? 'text-red-500' : 'text-blue-500'} hover:bg-blue-700 hover:text-white px-2 py-1 rounded transition-colors`}
+                        >
                             <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 24 24"
                                  xmlns="http://www.w3.org/2000/svg" className="mr-1">
                                 <title/>
@@ -54,10 +84,11 @@ const Comment = ({comment, onReply, depth = 0}) => {
                                     </g>
                                 </g>
                             </svg>
-                            {comment.likes_count || 0}
+                            {dislikesCount}
                         </button>
                         {depth < 2 && (
-                            <button onClick={() => setShowReplyForm(!showReplyForm)}
+                            <button
+                                onClick={() => setShowReplyForm(!showReplyForm)}
                                     className="hover:underline">Reply</button>
                         )}
                     </div>

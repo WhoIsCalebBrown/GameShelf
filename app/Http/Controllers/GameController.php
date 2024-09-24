@@ -19,7 +19,15 @@ class GameController extends Controller
             'coverArts',
             'genres',
             'comments.user',
-            'comments.replies.user']);
+            'comments.replies.user',
+            // Load likes count
+            'comments' => function ($query) {
+                $query->withCount('likes');
+            },
+            'comments.replies' => function ($query) {
+                $query->withCount('likes');
+            }
+        ]);
 
         return Inertia::render('Game', [
             'game' => $game,
@@ -36,7 +44,7 @@ class GameController extends Controller
     public function searchWithScout(Request $request)
     {
         $gameName = $request->input('game_name');
-        $games    = Game::search($gameName)->get();
+        $games = Game::search($gameName)->get();
 
         if (count($games) < 1) {
             IGDBGame::fuzzySearch(
@@ -77,9 +85,9 @@ class GameController extends Controller
         ]);
 
         DB::table('game_user')->insert([
-            'user_id'    => Auth::id(),
-            'game_id'    => $request->game_id,
-            'status'     => 'owned',
+            'user_id' => Auth::id(),
+            'game_id' => $request->game_id,
+            'status' => 'owned',
             'created_at' => now(),
             'updated_at' => now(),
         ]);

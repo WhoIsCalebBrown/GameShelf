@@ -2,35 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Like;
-use Illuminate\Http\JsonResponse;
+use App\Models\Comment;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-
 
 class LikeController extends Controller
 {
-    public function like($likableType, $likableId): JsonResponse
+    public function like(Request $request, Comment $comment)
     {
-        $like = Like::firstOrCreate([
-            'user_id' => Auth::id(),
-            'likable_id' => $likableId,
-            'likable_type' => "App\\Models\\" . ucfirst($likableType)
-        ]);
+        // Remove dislike if it exists
+        $comment->likes()->where('user_id', $request->user()->id)->where('type', 'dislike')->delete();
 
-        return response()->json($like, 201);
+        // Add like if it doesn't exist
+        if (!$comment->likes()->where('user_id', $request->user()->id)->where('type', 'like')->exists()) {
+            $comment->likes()->create(['user_id' => $request->user()->id, 'type' => 'like']);
+        }
+
+        return response()->json(['likes_count' => $comment->likes()->where('type', 'like')->count()]);
     }
 
-    public function unlike($likableType, $likableId): JsonResponse
+    public function dislike(Request $request, Comment $comment)
     {
-        Like::where([
-            'user_id' => Auth::id(),
-            'likable_id' => $likableId,
-            'likable_type' => "App\\Models\\" . ucfirst($likableType)
-        ])->delete();
+        // Remove like if it exists
+        $comment->likes()->where('user_id', $request->user()->id)->where('type', 'like')->delete();
 
-        return response()->json(null, 204);
+        // Add dislike if it doesn't exist
+        if (!$comment->likes()->where('user_id', $request->user()->id)->where('type', 'dislike')->exists()) {
+            $comment->likes()->create(['user_id' => $request->user()->id, 'type' => 'dislike']);
+        }
+
+        return response()->json(['dislikes_count' => $comment->likes()->where('type', 'dislike')->count()]);
     }
-
-
 }

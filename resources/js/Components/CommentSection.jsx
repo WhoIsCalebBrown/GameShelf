@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Comment from './Comment';
 
+
 const CommentSection = ({ gameId, initialComments = [], user }) => {
     const [comments, setComments] = useState(initialComments);
     const [newComment, setNewComment] = useState('');
