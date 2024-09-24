@@ -9,13 +9,6 @@ const Comment = ({comment, onReply, depth = 0}) => {
     const [liked, setLiked] = useState(comment.is_liked || false);
     const [disliked, setDisliked] = useState(comment.is_disliked || false);
 
-    const handleReplySubmit = (e) => {
-        e.preventDefault();
-        onReply(comment.id, replyText);
-        setReplyText('');
-        setShowReplyForm(false);
-    };
-
     const handleLike = async () => {
         try {
             const response = await axios.post(`/api/comments/${comment.id}/like`);
@@ -24,6 +17,16 @@ const Comment = ({comment, onReply, depth = 0}) => {
             setDisliked(false); // Ensure dislike is reset
         } catch (error) {
             console.error('Error liking comment:', error);
+        }
+    };
+
+    const handleUnlike = async () => {
+        try {
+            const response = await axios.delete(`/api/comments/${comment.id}/unlike`);
+            setLikesCount(response.data.likes_count);
+            setLiked(false);
+        } catch (error) {
+            console.error('Error unliking comment:', error);
         }
     };
 
@@ -38,16 +41,25 @@ const Comment = ({comment, onReply, depth = 0}) => {
         }
     };
 
+    const handleUndislike = async () => {
+        try {
+            const response = await axios.delete(`/api/comments/${comment.id}/undislike`);
+            setDislikesCount(response.data.dislikes_count);
+            setDisliked(false);
+        } catch (error) {
+            console.error('Error undisliking comment:', error);
+        }
+    };
+
     return (
         <li className="mb-4 p-4 bg-gray-800 text-gray-300 rounded-lg">
             <div className="flex items-start mb-2">
                 <img src={comment.user?.profile_photo || "https://i.pravatar.cc/300"} alt="User Avatar"
-                     className="w-10 h-10 rounded-full mr-3"/>
+                     className="w-10 h-10 rounded-full mr-3" />
                 <div className="flex-1">
                     <div className="flex justify-between items-center">
                         <span className="font-semibold">{comment.user?.name}</span>
-                        <span
-                            className="text-sm text-gray-500">{new Date(comment.created_at).toLocaleDateString()}</span>
+                        <span className="text-sm text-gray-500">{new Date(comment.created_at).toLocaleDateString()}</span>
                     </div>
                     <p className="mb-2">{comment.text}</p>
                     <div className="flex items-center space-x-4 text-sm text-gray-400">
@@ -69,7 +81,7 @@ const Comment = ({comment, onReply, depth = 0}) => {
                             {likesCount}
                         </button>
                         <button
-                            onClick={disliked ? handleUnlike : handleDislike}
+                            onClick={disliked ? handleUndislike : handleDislike}
                             className={`flex items-center ${disliked ? 'text-red-500' : 'text-blue-500'} hover:bg-blue-700 hover:text-white px-2 py-1 rounded transition-colors`}
                         >
                             <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 24 24"
@@ -89,7 +101,7 @@ const Comment = ({comment, onReply, depth = 0}) => {
                         {depth < 2 && (
                             <button
                                 onClick={() => setShowReplyForm(!showReplyForm)}
-                                    className="hover:underline">Reply</button>
+                                className="hover:underline">Reply</button>
                         )}
                     </div>
                     {showReplyForm && (

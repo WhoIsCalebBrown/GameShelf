@@ -15,11 +15,12 @@ const GameDetail = ({ game, auth }) => {
                         className="absolute inset-0 bg-contain bg-no-repeat z-0"
                         style={{
                             backgroundImage: `url(${game.artworks.length > 0 ? `https://images.igdb.com/igdb/image/upload/t_1080p/${game.artworks[0].image_id}.jpg` : "https://placehold.co/1280x720"})`,
+                            backgroundPosition: 'center top', // Center horizontally, top vertically
                         }}
                     >
-                        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-transparent"></div>
+                        <div
+                            className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-transparent"></div>
                     </div>
-
                     <div className="relative max-w-6xl mx-auto p-8 z-10">
                         <div className="flex items-center space-x-8">
                             <div className="w-1/3">
@@ -39,7 +40,7 @@ const GameDetail = ({ game, auth }) => {
                         </div>
 
                         {/* Pass comments to CommentSection */}
-                        <CommentSection gameId={game.id} initialComments={comments} user={auth} />
+                        <CommentSection gameId={game.id} initialComments={comments} user={auth}/>
                     </div>
                 </div>
             </div>

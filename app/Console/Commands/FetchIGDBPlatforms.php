@@ -23,6 +23,9 @@ class FetchIGDBPlatforms extends Command
         $response = json_decode($response->getBody()->getContents());
 
         collect($response)->each(function ($platform) {
+            if($platform->name == 'PC (Microsoft Windows)'){
+               $platform->name  = 'PC';
+            }
             Platform::updateOrCreate(
                 [
                     'id'               => $platform->id,
