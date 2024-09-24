@@ -51,6 +51,14 @@ const Comment = ({comment, onReply, depth = 0}) => {
         }
     };
 
+    const handleReplySubmit = (e) => {
+        e.preventDefault();
+        onReply(comment.id, replyText);
+        setReplyText('');
+        setShowReplyForm(false);
+    };
+
+
     return (
         <li className="mb-4 p-4 bg-gray-800 text-gray-300 rounded-lg">
             <div className="flex items-start mb-2">
@@ -81,7 +89,7 @@ const Comment = ({comment, onReply, depth = 0}) => {
                             {likesCount}
                         </button>
                         <button
-                            onClick={disliked ? handleUndislike : handleDislike}
+                            onClick={disliked ? handleUnlike : handleDislike}
                             className={`flex items-center ${disliked ? 'text-red-500' : 'text-blue-500'} hover:bg-blue-700 hover:text-white px-2 py-1 rounded transition-colors`}
                         >
                             <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 24 24"
@@ -101,7 +109,7 @@ const Comment = ({comment, onReply, depth = 0}) => {
                         {depth < 2 && (
                             <button
                                 onClick={() => setShowReplyForm(!showReplyForm)}
-                                className="hover:underline">Reply</button>
+                                    className="hover:underline">Reply</button>
                         )}
                     </div>
                     {showReplyForm && (
