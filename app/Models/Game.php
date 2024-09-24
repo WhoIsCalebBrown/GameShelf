@@ -39,6 +39,11 @@ class Game extends Model
         return $this->belongsTo(Genre::class, 'genre', 'id');
     }
 
+    public function likes()
+    {
+        return $this->morphMany(Like::class, 'likable');
+    }
+
     public function comments()
     {
         return $this->hasMany(Comment::class);
