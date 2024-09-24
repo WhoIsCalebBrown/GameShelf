@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Comment from './Comment';
 
-const CommentSection = ({ gameId, initialComments, user }) => {
-
-    console.log(initialComments);
-    const [comments, setComments] = useState(initialComments || []);
+const CommentSection = ({ gameId, initialComments = [], user }) => {
+    const [comments, setComments] = useState(initialComments);
     const [newComment, setNewComment] = useState('');
 
     const handleCommentSubmit = async (e) => {
@@ -16,6 +14,7 @@ const CommentSection = ({ gameId, initialComments, user }) => {
             game_id: gameId,
             user: user,
             text: newComment,
+            replies: [],
         };
 
         setComments([...comments, tempComment]);
@@ -40,11 +39,23 @@ const CommentSection = ({ gameId, initialComments, user }) => {
     const handleReplySubmit = async (parentId, replyText) => {
         try {
             const response = await axios.post(`/api/games/${gameId}/comments`, { text: replyText, parent_id: parentId, game_id: gameId });
-            setComments((prevComments) =>
-                prevComments.map(comment =>
-                    comment.id === parentId ? {...comment, replies: [...(comment.replies || []), response.data]} : comment
-                )
-            );
+
+            const updateReplies = (comments) => {
+                return comments.map(comment => {
+                    if (comment.id === parentId) {
+                        return {
+                            ...comment,
+                            replies: [...(comment.replies || []), response.data],
+                        };
+                    }
+                    return {
+                        ...comment,
+                        replies: updateReplies(comment.replies || []),
+                    };
+                });
+            };
+
+            setComments(prevComments => updateReplies(prevComments));
         } catch (error) {
             console.error('Error posting reply:', error.response?.data || error.message);
             alert('Failed to add reply. Please try again.');
