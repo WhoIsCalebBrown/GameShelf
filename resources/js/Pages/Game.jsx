@@ -2,10 +2,13 @@
 import React from 'react';
 import CommentSection from "../Components/CommentSection.jsx";
 import Default from "../Layouts/Default.jsx";
+import {usePage} from "@inertiajs/react";
 
-const GameDetail = ({ game, auth }) => {
+const GameDetail = ({  }) => {
     // Assume comments are part of the game data
-    const { comments } = game;
+    // const { comments } = game;
+
+    const { props: { game, auth } } = usePage()
 
     return (
         <Default user={auth}>
@@ -40,7 +43,7 @@ const GameDetail = ({ game, auth }) => {
                         </div>
 
                         {/* Pass comments to CommentSection */}
-                        <CommentSection gameId={game.id} initialComments={comments} user={auth}/>
+                        <CommentSection />
                     </div>
                 </div>
             </div>

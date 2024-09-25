@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Head } from '@inertiajs/react';
+import React, {useEffect, useState} from 'react';
+import {Head, usePage} from '@inertiajs/react';
 import Default from '@/Layouts/Default';
 import CommandPalette from "@/Components/CommandPalette.jsx";
 import DescriptionModal from "@/Components/DescriptionModal.jsx";
@@ -8,7 +8,9 @@ import axios from 'axios';
 import { Inertia } from '@inertiajs/inertia';
 import RunawayButton from "../Components/RunawayButton.jsx";
 
-const Home = ({ games, auth }) => {
+const Home = ({  }) => {
+    const { props: { games } } = usePage()
+
     const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [selectedGame, setSelectedGame] = useState(null);
@@ -33,7 +35,6 @@ const Home = ({ games, auth }) => {
         setSelectedGame(null);
     };
 
-    console.log(games);
     const handleAddGame = () => {
         if (selectedGame) {
             axios.post('/game-user', {
@@ -52,7 +53,7 @@ const Home = ({ games, auth }) => {
     };
 
     return (
-        <Default user={auth}>
+        <Default>
             <Head title="Your Video Game Collection Manager" />
 
             <CommandPalette gameModalCallback={handleOpenAddModal} />
@@ -144,7 +145,7 @@ const Home = ({ games, auth }) => {
                     border: 3px solid #1a202c;
                 }
             `}</style>
-        </Default>
+    </Default>
     );
 };
 

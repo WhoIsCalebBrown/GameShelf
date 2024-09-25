@@ -1,7 +1,9 @@
-import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { Fragment } from 'react'
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import {Disclosure, Menu, Transition} from '@headlessui/react'
+import {Bars3Icon, BellIcon, XMarkIcon} from '@heroicons/react/24/outline'
+import {Fragment} from 'react'
+import {MagnifyingGlassIcon} from '@heroicons/react/20/solid'
+import {useUser} from "@/Context/UserContext.jsx";
+import {usePage} from "@inertiajs/react";
 
 const navigation = [
     { name: 'My Shelf', href: '/home', current: true },
@@ -20,7 +22,13 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function NavBar({ user }) {
+export default function NavBar() {
+    // const { user } = useUser();
+    const { props } = usePage()
+    const user = props.auth
+
+    console.log('fetching user: ', user)
+
     const handleLogout = (event) => {
         event.preventDefault();
         document.getElementById('logout-form').submit();
@@ -37,12 +45,14 @@ export default function NavBar({ user }) {
                                     {/* Your SVG logo here */}
                                 </div>
                             </div>
-                            <div className="relative z-0 flex flex-1 items-center justify-center px-2 sm:absolute sm:inset-0">
+                            <div
+                                className="relative z-0 flex flex-1 items-center justify-center px-2 sm:absolute sm:inset-0">
                                 <div className="w-full sm:max-w-xs">
                                     <label htmlFor="search" className="sr-only">Search</label>
                                     <div className="relative">
-                                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                            <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                        <div
+                                            className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                            <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true"/>
                                         </div>
                                         <input
                                             id="search"
@@ -55,12 +65,13 @@ export default function NavBar({ user }) {
                                 </div>
                             </div>
                             <div className="relative z-10 flex items-center lg:hidden">
-                                <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                                <Disclosure.Button
+                                    className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                                     <span className="sr-only">Open menu</span>
                                     {open ? (
-                                        <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+                                        <XMarkIcon className="block h-6 w-6" aria-hidden="true"/>
                                     ) : (
-                                        <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                                        <Bars3Icon className="block h-6 w-6" aria-hidden="true"/>
                                     )}
                                 </Disclosure.Button>
                             </div>
@@ -71,14 +82,16 @@ export default function NavBar({ user }) {
                                         className="relative flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                                     >
                                         <span className="sr-only">View notifications</span>
-                                        <BellIcon className="h-6 w-6" aria-hidden="true" />
+                                        <BellIcon className="h-6 w-6" aria-hidden="true"/>
                                     </button>
                                     <Menu as="div" className="relative ml-4 flex-shrink-0">
                                         <div>
-                                            <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                                            <Menu.Button
+                                                className="relative flex rounded-full bg-gray-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                                 <span className="sr-only">Open user menu</span>
                                                 {user.profile_photo && (
-                                                    <img className="h-8 w-8 rounded-full" src={user.profile_photo} alt="" />
+                                                    <img className="h-8 w-8 rounded-full" src={user.profile_photo}
+                                                         alt=""/>
                                                 )}
                                             </Menu.Button>
                                         </div>
@@ -91,7 +104,8 @@ export default function NavBar({ user }) {
                                             leaveFrom="transform opacity-100 scale-100"
                                             leaveTo="transform opacity-0 scale-95"
                                         >
-                                            <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                            <Menu.Items
+                                                className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                                 {userNavigation.map((item) =>
                                                     item.method === 'post' ? (
                                                         <Menu.Item key={item.name}>
@@ -124,8 +138,10 @@ export default function NavBar({ user }) {
                                 </div>
                             ) : (
                                 <div className="hidden lg:relative lg:z-10 lg:ml-4 lg:flex lg:items-center">
-                                    <a href="/login" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Login</a>
-                                    <a href="/register" className="ml-4 text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Register</a>
+                                    <a href="/login"
+                                       className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Login</a>
+                                    <a href="/register"
+                                       className="ml-4 text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Register</a>
                                 </div>
                             )}
                         </div>
@@ -168,7 +184,7 @@ export default function NavBar({ user }) {
                                 <div className="flex items-center px-4">
                                     <div className="flex-shrink-0">
                                         {user.profile_photo && (
-                                            <img className="h-10 w-10 rounded-full" src={user.profile_photo} alt="" />
+                                            <img className="h-10 w-10 rounded-full" src={user.profile_photo} alt=""/>
                                         )}
                                     </div>
                                     <div className="ml-3">
@@ -204,7 +220,8 @@ export default function NavBar({ user }) {
                         )}
                     </Disclosure.Panel>
                     <form id="logout-form" action="/logout" method="POST" className="hidden">
-                        <input type="hidden" name="_token" value={document.querySelector('meta[name="csrf-token"]').getAttribute('content')} />
+                        <input type="hidden" name="_token"
+                               value={document.querySelector('meta[name="csrf-token"]').getAttribute('content')}/>
                     </form>
                 </>
             )}

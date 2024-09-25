@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Comment from './Comment';
+import {usePage} from "@inertiajs/react";
 
 
-const CommentSection = ({ gameId, initialComments = [], user }) => {
-    const [comments, setComments] = useState(initialComments);
+const CommentSection = ({  }) => {
+    const { props: { game, auth: user } } = usePage()
+    const gameId = game.id;
+
+    const [comments, setComments] = useState(game.comments);
     const [newComment, setNewComment] = useState('');
 
     const handleCommentSubmit = async (e) => {

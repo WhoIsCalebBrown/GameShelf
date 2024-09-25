@@ -1,10 +1,11 @@
 import React from 'react';
 import NavBar from "@/Components/NavBar.jsx";
+import {useUser} from "@/Context/UserContext.jsx";
 
-export default function Layout({ children, user }) {
+export default function Layout({ children }) {
     return (
         <div>
-            <NavBar user={user} />
+            <NavBar />
             <main>{children}</main>
         </div>
     );
