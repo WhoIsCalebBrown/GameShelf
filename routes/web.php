@@ -4,6 +4,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TrendingController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -30,6 +31,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/home', HomeController::class)->middleware('auth')->name('home');
+
+Route::get('/trending', TrendingController::class);
 
 Route::get('/games/search', [GameController::class, 'searchWithScout'])->name('games.searchWithScout');
 Route::get('/games/{game:slug}', [GameController::class, 'show'])->name('games.show');

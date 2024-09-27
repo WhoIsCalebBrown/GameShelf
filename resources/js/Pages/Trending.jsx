@@ -3,15 +3,16 @@ import { Head } from '@inertiajs/react';
 import Default from '@/Layouts/Default';
 import CommandPalette from "@/Components/CommandPalette.jsx";
 import DescriptionModal from "@/Components/DescriptionModal.jsx";
-import { Description, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
+import { Dialog, DialogTitle } from "@headlessui/react";
 import axios from 'axios';
 import { Inertia } from '@inertiajs/inertia';
 import RunawayButton from "../Components/RunawayButton.jsx";
 
-const Home = ({ games, auth }) => {
+const Trending = ({ games, auth }) => {
     const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [selectedGame, setSelectedGame] = useState(null);
+    const [sortCriteria, setSortCriteria] = useState('id');
 
     const handleOpenDescriptionModal = (game) => {
         setSelectedGame(game);
@@ -33,7 +34,6 @@ const Home = ({ games, auth }) => {
         setSelectedGame(null);
     };
 
-    console.log(games);
     const handleAddGame = () => {
         if (selectedGame) {
             axios.post('/game-user', {
@@ -51,10 +51,19 @@ const Home = ({ games, auth }) => {
         }
     };
 
+    // Function to sort games based on the selected criteria
+    const sortedGames = [...games].sort((a, b) => {
+        if (sortCriteria === 'id') {
+            return a.id - b.id;
+        } else if (sortCriteria === 'name') {
+            return a.name.localeCompare(b.name);
+        }
+        return 0;
+    });
+
     return (
         <Default user={auth}>
             <Head title="Your Video Game Collection Manager" />
-
             <CommandPalette gameModalCallback={handleOpenAddModal} />
 
             {selectedGame && (
@@ -70,7 +79,7 @@ const Home = ({ games, auth }) => {
                     <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
                         <Dialog.Panel className="max-w-lg space-y-4 border bg-white p-12">
                             <DialogTitle className="font-bold">{selectedGame.name}</DialogTitle>
-                            <Description>Do you want to add this game to your library?</Description>
+                            <p>Do you want to add this game to your library?</p>
                             <div className="flex gap-4">
                                 <button onClick={handleCloseAddModal}>Cancel</button>
                                 <button onClick={handleAddGame}>Add</button>
@@ -81,9 +90,24 @@ const Home = ({ games, auth }) => {
             )}
 
             <div className="relative dark:bg-dots-lighter dark:bg-gray-900 text-white min-h-screen pt-16 p-8 overflow-x-hidden">
-                <h1 className="mt-12 text-5xl font-extrabold mb-8 text-center text-purple-600">GameShelf</h1>
+                <h1 className="mt-12 text-5xl font-extrabold text-center text-purple-600">GameShelf</h1>
+
+                {/* Sorting Controls */}
+                <div className="flex-end  mb-8 text-right px-14">
+                    <label htmlFor="sort" className="mr-2">Sort by:</label>
+                    <select
+                        id="sort"
+                        value={sortCriteria}
+                        onChange={(e) => setSortCriteria(e.target.value)}
+                        className="bg-gray-800 text-white p-2 pr-10 rounded text-left"
+                    >
+                        <option value="id">ID</option>
+                        <option value="name">Name</option>
+                    </select>
+                </div>
+
                 <div className="flex flex-wrap justify-center gap-8">
-                    {games.map((game) => {
+                    {sortedGames.map((game) => {
                         const isTruncated = game.description.length > 200;
                         const artworkUrl = game.cover_arts.length > 0
                             ? `https://images.igdb.com/igdb/image/upload/t_720p/${game.cover_arts[0].image_id}.jpg`
@@ -120,6 +144,7 @@ const Home = ({ games, auth }) => {
                 <RunawayButton />
             </div>
 
+            {/* Custom styles */}
             <style>{`
                 .bg-dots-darker {
                     background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0 0 1.22676 0Z' fill='rgba(0,0,0,0.07)'/%3E%3C/svg%3E");
@@ -129,23 +154,9 @@ const Home = ({ games, auth }) => {
                         background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0 0 1.22676 0Z' fill='rgba(255,255,255,0.07)'/%3E%3C/svg%3E");
                     }
                 }
-                /* Custom scrollbar for dark theme */
-                ::-webkit-scrollbar {
-                    width: 12px;
-                }
-
-                ::-webkit-scrollbar-track {
-                    background: #1a202c;
-                }
-
-                ::-webkit-scrollbar-thumb {
-                    background-color: #4a5568;
-                    border-radius: 6px;
-                    border: 3px solid #1a202c;
-                }
             `}</style>
         </Default>
     );
 };
 
-export default Home;
+export default Trending;
