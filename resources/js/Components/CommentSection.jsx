@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import Comment from './Comment';
+import React, { useState } from "react";
+import axios from "axios";
+import Comment from "./Comment";
 
 
 const CommentSection = ({ gameId, initialComments = [], user }) => {
     const [comments, setComments] = useState(initialComments);
-    const [newComment, setNewComment] = useState('');
+    const [newComment, setNewComment] = useState("");
 
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
@@ -15,11 +15,11 @@ const CommentSection = ({ gameId, initialComments = [], user }) => {
             game_id: gameId,
             user: user,
             text: newComment,
-            replies: [],
+            replies: []
         };
 
         setComments([...comments, tempComment]);
-        setNewComment('');
+        setNewComment("");
 
         try {
             const response = await axios.post(`/api/games/${gameId}/comments`, { text: newComment, game_id: gameId });
@@ -29,37 +29,41 @@ const CommentSection = ({ gameId, initialComments = [], user }) => {
                 )
             );
         } catch (error) {
-            console.error('Error posting comment:', error.response?.data || error.message);
+            console.error("Error posting comment:", error.response?.data || error.message);
             setComments((prevComments) =>
                 prevComments.filter((comment) => comment.id !== tempComment.id)
             );
-            alert('Failed to add comment. Please try again.');
+            alert("Failed to add comment. Please try again.");
         }
     };
 
     const handleReplySubmit = async (parentId, replyText) => {
         try {
-            const response = await axios.post(`/api/games/${gameId}/comments`, { text: replyText, parent_id: parentId, game_id: gameId });
+            const response = await axios.post(`/api/games/${gameId}/comments`, {
+                text: replyText,
+                parent_id: parentId,
+                game_id: gameId
+            });
 
             const updateReplies = (comments) => {
                 return comments.map(comment => {
                     if (comment.id === parentId) {
                         return {
                             ...comment,
-                            replies: [...(comment.replies || []), response.data],
+                            replies: [...(comment.replies || []), response.data]
                         };
                     }
                     return {
                         ...comment,
-                        replies: updateReplies(comment.replies || []),
+                        replies: updateReplies(comment.replies || [])
                     };
                 });
             };
 
             setComments(prevComments => updateReplies(prevComments));
         } catch (error) {
-            console.error('Error posting reply:', error.response?.data || error.message);
-            alert('Failed to add reply. Please try again.');
+            console.error("Error posting reply:", error.response?.data || error.message);
+            alert("Failed to add reply. Please try again.");
         }
     };
 
