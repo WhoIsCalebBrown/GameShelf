@@ -42,7 +42,7 @@ const RunawayButton = () => {
     return (
         <button
             id="runaway-button"
-            className="bg-blue-500 text-white px-4 py-2 rounded fixed transition-all duration-100"
+            className="bg-gradient-to-r bg-blue-500 to-purple-600 text-white px-4 py-2 rounded fixed transition-all duration-100"
             style={{ top: position.top, left: position.left, position: 'fixed' }}
         >
             Search Game
