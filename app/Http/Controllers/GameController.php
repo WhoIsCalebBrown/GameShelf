@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use MarcReichel\IGDBLaravel\Exceptions\MissingEndpointException;
 use MarcReichel\IGDBLaravel\Models\Game as IGDBGame;
 
 class GameController extends Controller
@@ -41,20 +42,23 @@ class GameController extends Controller
         return response()->json($games);
     }
 
+
     public function searchWithScout(Request $request)
     {
         $gameName = $request->input('game_name');
         $games = Game::search($gameName)->get();
 
         if (count($games) < 1) {
-            IGDBGame::fuzzySearch(
+            $dump = IGDBGame::fuzzySearch(
                 [
                     'name',
                     'involved_companies.company.name',
                 ],
                 $gameName
             )->get();
+            dump($dump);
         }
+
         return response()->json($games);
     }
 
