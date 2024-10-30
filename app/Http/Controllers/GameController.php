@@ -49,16 +49,8 @@ class GameController extends Controller
         $games = Game::search($gameName)->get();
 
         if (count($games) < 1) {
-            $dump = IGDBGame::fuzzySearch(
-                [
-                    'name',
-                    'involved_companies.company.name',
-                ],
-                $gameName
-            )->get();
-            dump($dump);
+            $games = IGDBGame::search($gameName)->get();
         }
-
         return response()->json($games);
     }
 
