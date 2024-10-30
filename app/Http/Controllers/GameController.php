@@ -50,7 +50,19 @@ class GameController extends Controller
 
         if (count($games) < 1) {
             $games = IGDBGame::search($gameName)->get();
+            foreach ($games as $igdbGame) {
+                Game::create([
+                    'name' => $igdbGame->name,
+                    'year' => date('Y', strtotime($igdbGame->first_release_date)) ?? 2000,
+                    'description' => $igdbGame->summary ?? 'No description available',
+                    'genre' => $igdbGame->genres[0] ?? 'Unknown',
+                    'platforms' => $igdbGame->platforms[0] ?? 'Unknown',
+                    'igdb_id' => $igdbGame->id,
+                    'slug' => $igdbGame->slug,
+                ]);
+            }
         }
+
         return response()->json($games);
     }
 
