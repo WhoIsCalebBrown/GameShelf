@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\FetchGameArtwork;
+use App\Jobs\FetchGameCoverArt;
+use App\Models\Artwork;
 use App\Models\Game;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use MarcReichel\IGDBLaravel\Exceptions\MissingEndpointException;
 use MarcReichel\IGDBLaravel\Models\Game as IGDBGame;
@@ -51,7 +57,7 @@ class GameController extends Controller
         if (count($games) < 1) {
             $games = IGDBGame::search($gameName)->get();
             foreach ($games as $igdbGame) {
-                Game::create([
+                $game = Game::create([
                     'name' => $igdbGame->name,
                     'year' => date('Y', strtotime($igdbGame->first_release_date)) ?? 2000,
                     'description' => $igdbGame->summary ?? 'No description available',
@@ -60,6 +66,13 @@ class GameController extends Controller
                     'igdb_id' => $igdbGame->id,
                     'slug' => $igdbGame->slug,
                 ]);
+                try{
+                    FetchGameArtwork::dispatch($game->id, $igdbGame->id);
+                    FetchGameCoverArt::dispatch($game->id, $igdbGame->id);
+                }catch (\Exception $e) {
+                    Log::error('Job failed: ' . $e->getMessage());
+                }
+                Log::info('Fetch Game Artwork Dispatched');
             }
         }
 
