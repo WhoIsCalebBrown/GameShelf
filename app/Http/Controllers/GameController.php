@@ -54,29 +54,34 @@ class GameController extends Controller
         $gameName = $request->input('game_name');
         $games = Game::search($gameName)->get();
 
-        if (count($games) < 1) {
-            $games = IGDBGame::search($gameName)->get();
-            foreach ($games as $igdbGame) {
-                $game = Game::create([
-                    'name' => $igdbGame->name,
-                    'year' => date('Y', strtotime($igdbGame->first_release_date)) ?? 2000,
-                    'description' => $igdbGame->summary ?? 'No description available',
-                    'genre' => $igdbGame->genres[0] ?? 'Unknown',
-                    'platforms' => $igdbGame->platforms[0] ?? 'Unknown',
-                    'igdb_id' => $igdbGame->id,
-                    'slug' => $igdbGame->slug,
-                ]);
-                try{
-                    FetchGameArtwork::dispatch($game->id, $igdbGame->id);
-                    FetchGameCoverArt::dispatch($game->id, $igdbGame->id);
-                }catch (\Exception $e) {
-                    Log::error('Job failed: ' . $e->getMessage());
-                }
-                Log::info('Fetch Game Artwork Dispatched');
-            }
-        }
+        $InternetGames = IGDBGame::search($gameName)->get();
 
-        return response()->json($games);
+        $transformedIgdbGames = $InternetGames->map(function ($igdbGame) {
+            $game = Game::create([
+                'name' => $igdbGame->name,
+                'year' => date('Y', strtotime($igdbGame->first_release_date)) ?? 2000,
+                'description' => $igdbGame->summary ?? 'No description available',
+                'genre' => $igdbGame->genres[0] ?? 'Unknown',
+                'platforms' => $igdbGame->platforms[0] ?? 'Unknown',
+                'igdb_id' => $igdbGame->id,
+                'slug' => $igdbGame->slug,
+            ]);
+
+            try {
+                FetchGameArtwork::dispatch($game->id, $igdbGame->id);
+                FetchGameCoverArt::dispatch($game->id, $igdbGame->id);
+            } catch (\Exception $e) {
+                Log::error('Job failed: ' . $e->getMessage());
+            }
+
+            return $game;
+        });
+
+        $mergedGames = $games->concat($transformedIgdbGames)
+            ->unique('name')
+            ->values();
+
+        return response()->json($mergedGames);
     }
 
     public function store(Request $request)
