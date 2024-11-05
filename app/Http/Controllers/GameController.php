@@ -2,11 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\FetchGameArtwork;
+use App\Jobs\FetchGameCoverArt;
+use App\Models\Artwork;
 use App\Models\Game;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use MarcReichel\IGDBLaravel\Exceptions\MissingEndpointException;
 use MarcReichel\IGDBLaravel\Models\Game as IGDBGame;
 
 class GameController extends Controller
@@ -41,21 +48,40 @@ class GameController extends Controller
         return response()->json($games);
     }
 
+
     public function searchWithScout(Request $request)
     {
         $gameName = $request->input('game_name');
         $games = Game::search($gameName)->get();
 
-        if (count($games) < 1) {
-            IGDBGame::fuzzySearch(
-                [
-                    'name',
-                    'involved_companies.company.name',
-                ],
-                $gameName
-            )->get();
-        }
-        return response()->json($games);
+        $InternetGames = IGDBGame::search($gameName)->get();
+
+        $transformedIgdbGames = $InternetGames->map(function ($igdbGame) {
+            $game = Game::create([
+                'name' => $igdbGame->name,
+                'year' => date('Y', strtotime($igdbGame->first_release_date)) ?? 2000,
+                'description' => $igdbGame->summary ?? 'No description available',
+                'genre' => $igdbGame->genres[0] ?? 'Unknown',
+                'platforms' => $igdbGame->platforms[0] ?? 'Unknown',
+                'igdb_id' => $igdbGame->id,
+                'slug' => $igdbGame->slug,
+            ]);
+
+            try {
+                FetchGameArtwork::dispatch($game->id, $igdbGame->id);
+                FetchGameCoverArt::dispatch($game->id, $igdbGame->id);
+            } catch (\Exception $e) {
+                Log::error('Job failed: ' . $e->getMessage());
+            }
+
+            return $game;
+        });
+
+        $mergedGames = $games->concat($transformedIgdbGames)
+            ->unique('name')
+            ->values();
+
+        return response()->json($mergedGames);
     }
 
     public function store(Request $request)
