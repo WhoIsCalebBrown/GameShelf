@@ -7,8 +7,10 @@ const TrendingGames = ({ games }) => {
 
     return (
         <div className="py-8">
-            <div className="pt mx-auto px-4 pt-12 sm:px-6 lg:px-32">
-                <h2 className="mb-8 text-3xl font-bold text-gray-900 dark:text-white">Trending Games</h2>
+            <div className="pt-30 mx-auto px-4 pt-12 sm:px-6 lg:px-32">
+                <h1 className="mb-8 text-center text-5xl font-extrabold text-purple-600 drop-shadow-lg">
+                    Trending Games
+                </h1>
 
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:grid-cols-5">
                     {games.map((game) => (
