@@ -32,7 +32,7 @@ Route::get('/dashboard', function () {
 
 Route::get('/home', HomeController::class)->middleware('auth')->name('home');
 
-Route::get('/trending', TrendingController::class);
+Route::get('/trending', [TrendingController::class, 'index'])->name('games.trending')->middleware('auth');
 
 Route::get('/games/search', [GameController::class, 'searchWithScout'])->name('games.searchWithScout');
 Route::get('/games/{game:slug}', [GameController::class, 'show'])->name('games.show');

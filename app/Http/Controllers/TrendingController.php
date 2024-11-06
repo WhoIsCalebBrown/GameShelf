@@ -3,18 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use App\Services\IGDBService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class TrendingController extends Controller
 {
-    public function __invoke(Request $request){
+    private IGDBService $igdbService;
 
-        $games = Game::with(['platforms', 'artworks', 'coverArts'])->get();
+    public function __construct(IGDBService $igdbService)
+    {
+        $this->igdbService = $igdbService;
+    }
+    public function index(Request $request){
+        $games = $this->igdbService->getPopularGames();
+
+        $formattedGames = array_map(function ($game) {
+            return [
+                'id' => $game['id'],
+                'name' => $game['name'],
+                'cover_url' => 'https:' . $game['cover']['url'],
+                'release_date' => Carbon::createFromTimestamp($game['first_release_date'])->format('M d, Y'),
+                'summary' => $game['summary']
+            ];
+        }, $games);
 
         return Inertia::render('Trending', [
-            'auth' => $request->user(),
-            'games' => $games
+            'games' => $formattedGames,
+            'auth' => $request->user()
         ]);
     }
 }
