@@ -9,7 +9,7 @@ const TrendingGames = ({ games }) => {
         <div className="py-8">
             <div className="pt-30 mx-auto px-4 pt-12 sm:px-6 lg:px-32">
                 <h1 className="mb-8 text-center text-5xl font-extrabold text-purple-600 drop-shadow-lg">
-                    Trending Games
+                    Trending Games test
                 </h1>
 
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:grid-cols-5">
